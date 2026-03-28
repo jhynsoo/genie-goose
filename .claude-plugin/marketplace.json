@@ -1,0 +1,12 @@
+{
+  "name": "genie-goose",
+  "owner": { "name": "jhynsoo" },
+  "plugins": [
+    {
+      "name": "genie-goose",
+      "source": "./plugin",
+      "description": "Pipeline-based development workflow framework: brainstorm, architecture, design-intent, evaluation-criteria, implement, review",
+      "version": "0.1.0"
+    }
+  ]
+}

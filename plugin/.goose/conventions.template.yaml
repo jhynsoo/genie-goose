@@ -1,0 +1,23 @@
+# .goose/conventions.yaml
+# Project coding conventions — referenced by genie-goose evaluation criteria
+#
+# Copy this file to your project root as .goose/conventions.yaml
+# and customize it for your team.
+
+general:
+  - id: GEN-001
+    rule: >
+      Each change should have a single clear purpose.
+      If one diff mixes behavior change, refactoring, file moves, and setup
+      changes, split it into separate changes whenever practical.
+    stacks: [all]
+
+# Add categories specific to your project.
+# The example below is active YAML so users can extend it directly.
+
+markdown:
+  - id: MD-001
+    rule: >
+      Keep repeated artifact sections structurally consistent.
+      If two documents describe the same concept, use the same heading names.
+    stacks: [markdown]

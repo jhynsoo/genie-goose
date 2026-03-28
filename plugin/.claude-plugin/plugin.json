@@ -1,0 +1,7 @@
+{
+  "name": "genie-goose",
+  "description": "Pipeline-based development workflow framework",
+  "version": "0.1.0",
+  "author": { "name": "jhynsoo" },
+  "license": "MIT"
+}
