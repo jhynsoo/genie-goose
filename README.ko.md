@@ -1,6 +1,6 @@
-[English](README.md)
-
 # Genie Goose
+
+[English](README.md) | **한국어**
 
 Claude Code용 파이프라인 기반 개발 워크플로우 플러그인.
 

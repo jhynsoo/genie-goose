@@ -1,6 +1,6 @@
-[한국어](README.ko.md)
-
 # Genie Goose
+
+**English** | [한국어](README.ko.md)
 
 Pipeline-based development workflow plugin for Claude Code.
 
