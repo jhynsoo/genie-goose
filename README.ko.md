@@ -9,13 +9,17 @@ Claude Code용 파이프라인 기반 개발 워크플로우 플러그인.
 ## 설치
 
 ```bash
-claude plugin install genie-goose@https://github.com/jhynsoo/genie-goose
+# marketplace 등록
+claude plugin marketplace add jhynsoo/genie-goose
+
+# 플러그인 설치
+claude plugin install genie-goose@genie-goose
 ```
 
 팀과 공유하려면 프로젝트 스코프로 설치:
 
 ```bash
-claude plugin install genie-goose@https://github.com/jhynsoo/genie-goose --scope project
+claude plugin install genie-goose@genie-goose --scope project
 ```
 
 ## 설정

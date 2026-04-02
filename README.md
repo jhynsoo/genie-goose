@@ -9,13 +9,17 @@ Runs a structured 6-step pipeline — **brainstorm → architecture → design-i
 ## Installation
 
 ```bash
-claude plugin install genie-goose@https://github.com/jhynsoo/genie-goose
+# Add the marketplace
+claude plugin marketplace add jhynsoo/genie-goose
+
+# Install the plugin
+claude plugin install genie-goose@genie-goose
 ```
 
 Or install at project scope to share with your team:
 
 ```bash
-claude plugin install genie-goose@https://github.com/jhynsoo/genie-goose --scope project
+claude plugin install genie-goose@genie-goose --scope project
 ```
 
 ## Setup
