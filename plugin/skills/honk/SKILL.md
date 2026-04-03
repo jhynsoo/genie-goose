@@ -36,15 +36,30 @@ Perform an evidence-based code review using the evaluation criteria established 
 
 After the reviewer subagent returns review-report.md:
 
-1. **Present each comment** to the user one by one (or grouped by priority), showing:
-   - The criterion, issue, suggestion, and side effect
-   - Ask: **ACCEPT** (fix this) or **REJECT** (skip this)?
+1. **Present ALL comments at once** as a batch summary:
 
-2. **For ACCEPT verdicts:** Fix the issue, then apply the `/genie-goose:polish` gate (RUN tests → READ output → VERIFY pass) before committing.
+   ### Review: {N} comments ({p1_count} p1, {p2_count} p2, {p3_count} p3, {p4_count} p4)
 
-3. **For REJECT verdicts:** Record the reason provided by the user.
+   | # | Priority | File | Issue | Default |
+   |---|----------|------|-------|---------|
+   | 1 | [p1] | path:line | Brief issue | ACCEPT |
+   | 2 | [p2] | path:line | Brief issue | (confirm) |
+   | ... | ... | ... | ... | ... |
 
-4. **Append verdict** to each comment in review-report.md:
+   Then expand details per priority group:
+
+   **[p1] Auto-accept** — Default ACCEPT. User must provide justification to reject.
+   **[p2] Judgment** — Present the agent's recommendation with reasoning. User confirms or overrides.
+   **[p3] Recommendation** — Offer suggestion but defer entirely to the user.
+   **[p4] Bulk** — User can "accept all", "reject all", or cherry-pick.
+
+2. **Collect all verdicts** before making any code changes. Do not start fixing until the user has reviewed the entire batch.
+
+3. **Fix all ACCEPT items**, then apply the `/genie-goose:polish` gate (RUN tests → READ output → VERIFY pass) before committing.
+
+4. **Record REJECT reasons** provided by the user.
+
+5. **Append verdict** to each comment in review-report.md:
    ```
    - **Verdict: ACCEPT** — Fixed. {Brief description of the fix}.
    ```
@@ -53,7 +68,7 @@ After the reviewer subagent returns review-report.md:
    - **Verdict: REJECT** — {User's reason for rejection}.
    ```
 
-5. **QA pass:** Apply the `/genie-goose:polish` gate for final verification — run full build + test suite, read output, verify 0 failures before claiming the review cycle is complete.
+6. **QA pass:** Apply the `/genie-goose:polish` gate for final verification — run full build + test suite, read output, verify 0 failures before claiming the review cycle is complete.
 
 ## Priority Levels
 
