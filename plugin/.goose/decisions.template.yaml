@@ -1,0 +1,42 @@
+# .goose/decisions.yaml
+# Architecture Decision Records — referenced by genie-goose design intent and evaluation criteria
+#
+# Copy this file to your project root as .goose/decisions.yaml
+# The intent step will propose additions and updates to this file.
+#
+# The examples below are active YAML so users can edit them directly.
+
+- id: ADR-001
+  title: Standardize API error responses
+  status: adopted          # adopted | deprecated | superseded
+  date: 2026-01-15
+  stacks: [backend, api, web]
+  context: |
+    Different endpoints had been returning different error shapes and status
+    code conventions. Clients had to add endpoint-specific parsing logic, and
+    operational dashboards could not reliably group similar failures.
+  decision: >
+    All non-success responses must use a shared JSON structure with stable
+    fields for code, message, and optional details, and must map to documented
+    HTTP status codes.
+  consequence: >
+    Client applications can handle failures consistently and monitoring becomes
+    easier, but legacy endpoints need migration work to match the new contract.
+
+- id: ADR-002
+  title: Use asynchronous jobs for long-running media processing
+  status: adopted
+  date: 2026-01-18
+  stacks: [backend, api, worker]
+  context: |
+    Image and video processing had been handled during request-response flows.
+    Under load, upload endpoints became slow and timeouts increased, especially
+    when multiple large files were processed at the same time.
+  decision: >
+    Accept uploads quickly, persist job metadata, and perform expensive media
+    transformations in background workers while exposing job status through the
+    API.
+  consequence: >
+    User-facing latency improves and processing capacity can scale separately,
+    but the system must now handle retries, job visibility, and eventual
+    consistency between upload and completion states.
