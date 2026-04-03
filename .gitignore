@@ -1,2 +1,8 @@
-# Goose artifacts (generated per-branch)
+.goose/
 .goose-artifacts/
+.claude/
+.DS_Store
+*.swp
+*.log
+*.local.*
+*.local
