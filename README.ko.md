@@ -4,7 +4,7 @@
 
 Claude Code용 파이프라인 기반 개발 워크플로우 플러그인.
 
-**brainstorm → architecture → design-intent → evaluation-criteria → implement → review** 6단계 파이프라인을 통해 모든 기능이 체계적인 설계, 설계 의도 문서화, 근거 기반 코드 리뷰를 거치도록 합니다.
+**rub → architecture → intent → write-plan → criteria → implement → honk** 7단계 파이프라인을 통해 모든 기능이 체계적인 설계, 설계 의도 문서화, 상세 구현 계획, 근거 기반 코드 리뷰를 거치도록 합니다.
 
 ## 설치
 
@@ -31,18 +31,20 @@ mkdir -p .goose
 cp ~/.claude/plugins/cache/*/genie-goose/*/plugin/.goose/conventions.template.yaml .goose/conventions.yaml
 ```
 
-`.goose/conventions.yaml`을 팀의 코딩 표준에 맞게 수정하세요. 간단한 YAML 구조를 사용합니다:
+`.goose/conventions.yaml`을 팀의 코딩 표준에 맞게 수정하세요. Flat YAML 구조를 사용합니다:
 
 ```yaml
-categories:
-  - name: general
-    rules:
-      - id: GEN-001
-        title: Function length limit
-        stacks: [all]
-        level: recommended
-        description: >
-          A single function should not exceed 30 lines.
+general:
+  - id: GEN-001
+    rule: >
+      A single function should not exceed 30 lines.
+    stacks: [all]
+```
+
+선택적으로 아키텍처 결정 기록 파일을 생성할 수 있습니다:
+
+```bash
+cp ~/.claude/plugins/cache/*/genie-goose/*/plugin/.goose/decisions.template.yaml .goose/decisions.yaml
 ```
 
 `.goose-artifacts/`를 `.gitignore`에 추가하세요 — 플러그인이 브랜치별 산출물을 이 디렉토리에 생성합니다:
@@ -61,7 +63,7 @@ echo ".goose-artifacts/" >> .gitignore
 /genie-goose:goose 사용자 인증 시스템 구축
 ```
 
-6단계를 순서대로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다.
+7단계를 순서대로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다.
 
 ### 개별 단계
 
@@ -69,44 +71,54 @@ echo ".goose-artifacts/" >> .gitignore
 
 | 명령 | 설명 |
 |------|------|
-| `/genie-goose:brainstorm <주제>` | 브레인스토밍 — 질문을 통해 요구사항을 파악하고 2-3가지 접근 방식 제안 |
+| `/genie-goose:rub <주제>` | 브레인스토밍 — 질문을 통해 요구사항을 파악하고 2-3가지 접근 방식 제안 |
 | `/genie-goose:architecture` | 브레인스토밍 결과를 바탕으로 기술 아키텍처 설계 |
-| `/genie-goose:design-intent` | 설계 결정, 트레이드오프, 의도적 제외 사항 문서화 |
-| `/genie-goose:evaluation-criteria` | 관련 컨벤션을 추출하여 리뷰 평가 기준 수립 |
-| `/genie-goose:implement` | 아키텍처와 설계 의도 문서를 기반으로 구현 |
-| `/genie-goose:review` | 근거 기반 코드 리뷰 — 치명적 이슈 자동 수정 |
+| `/genie-goose:intent` | 설계 의도 문서화 + 컨벤션/결정 충돌 감지 및 변경 제안 |
+| `/genie-goose:write-plan` | 마이크로 태스크와 테스트 코드가 포함된 상세 구현 계획 작성 |
+| `/genie-goose:criteria` | 관련 컨벤션/결정을 추출하여 리뷰 평가 기준 수립 |
+| `/genie-goose:implement` | 계획 체크리스트를 단계별로 실행 |
+| `/genie-goose:honk` | 근거 기반 코드 리뷰 — ACCEPT/REJECT 판정 |
 
 ### 파이프라인 흐름
 
 ```
-brainstorm ──→ design.md
-                  │
-architecture ──→ architecture.md
-                  │
-design-intent ─→ intent.md ──────────────┐
-                  │                       │
-evaluation    ─→ criteria.md ─────┐      │
- (conventions.yaml)               │      │
-                                  ▼      ▼
-implement     ←── architecture.md + intent.md
-                                  │      │
-review        ←── criteria.md + intent.md + git diff
+rub ───────────→ design.md
+                    │
+architecture ───→ architecture.md
+                    │
+intent ─────────→ intent.md ──────────────────┐
+ (conventions.yaml    │                       │
+  decisions.yaml)     │                       │
+                      │                       │
+write-plan ─────→ plan.md                     │
+                    │                         │
+criteria ───────→ criteria.md ────────┐      │
+ (conventions.yaml    │               │      │
+  decisions.yaml)     │               │      │
+                      │               ▼      ▼
+implement       ←── plan.md + intent.md
+                                      │      │
+honk            ←── criteria.md + intent.md + git diff
+                    │
+                    → review-report.md
 ```
 
 모든 산출물은 `.goose-artifacts/{branch-name}/`에 저장됩니다.
 
 ## 리뷰 방식
 
-리뷰 단계는 전용 subagent가 모든 변경 사항을 평가 기준에 대해 검사합니다. 모든 코멘트는 구체적인 기준을 인용해야 하며, 근거 없는 리뷰는 허용되지 않습니다.
+리뷰 단계(honk)는 전용 subagent가 모든 변경 사항을 평가 기준에 대해 검사합니다. 모든 코멘트는 구체적인 기준을 인용해야 하며, 근거 없는 리뷰는 허용되지 않습니다.
 
 **우선순위:**
 
 | 등급 | 의미 | 후속 처리 |
 |------|------|----------|
-| `[p1]` | 반드시 수정 (버그, 기준 위반) | 자동 수정 루프 (최대 3회) |
-| `[p2]` | 강력 권장 | 사용자에게 보고 |
-| `[p3]` | 권장 | 사용자에게 보고 |
-| `[p4]` | 사소한 개선 | 사용자에게 보고 |
+| `[p1]` | 반드시 수정 (버그, 기준 위반) | 사용자 판정 → 수정 |
+| `[p2]` | 강력 권장 | 사용자 판정 |
+| `[p3]` | 권장 | 사용자 판정 |
+| `[p4]` | 사소한 개선 | 사용자 판정 |
+
+각 코멘트는 사용자로부터 **ACCEPT** (수정) 또는 **REJECT** (건너뛰기) 판정을 받습니다. ACCEPT된 항목은 자동으로 수정 및 검증됩니다.
 
 ## 로컬 개발
 
