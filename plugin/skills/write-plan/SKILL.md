@@ -1,0 +1,78 @@
+---
+name: write-plan
+description: >
+  Write a detailed implementation plan with micro-tasks,
+  exact file paths, and test code snippets.
+  Each task should be completable in 2-5 minutes.
+disable-model-invocation: true
+---
+
+# Write Plan
+
+Create a detailed implementation plan based on the architecture and design intent documents.
+
+## Prerequisites
+
+- `.goose-artifacts/{branch}/architecture.md` must exist.
+- `.goose-artifacts/{branch}/intent.md` must exist.
+
+## Procedure
+
+1. **Read** architecture.md and intent.md to understand what to build and why.
+
+2. **Explore the codebase** to understand:
+   - Existing directory structure and file organization
+   - Test framework and testing patterns in use
+   - Dependencies and build tooling
+   - Related existing code that will be modified
+
+3. **Break work into micro-tasks.** Each task should:
+   - Be completable in 2-5 minutes
+   - Have a clear, verifiable outcome
+   - List exact file paths (Create / Modify / Test)
+   - Include step-by-step instructions with test code snippets
+   - Follow TDD pattern where applicable (failing test → implement → verify)
+
+4. **Present the plan section by section.** Ask the user to approve each task before moving on. If the user requests changes, revise and re-present.
+
+5. **Save artifact** to `.goose-artifacts/{branch}/plan.md` after full approval.
+
+## Artifact Format
+
+```
+# {Feature Name} Implementation Plan
+
+**Goal:** {One sentence summary}
+**Architecture:** {2-3 sentences on approach}
+**Tech Stack:** {Key technologies/libraries}
+
+---
+
+### Task 1: {Component Name}
+
+**Files:**
+- Create: `exact/path/to/file.py`
+- Modify: `exact/path/to/existing.py:123-145`
+- Test: `tests/exact/path/to/test.py`
+
+- [ ] **Step 1: Write the failing test**
+  \```python
+  def test_specific_behavior():
+      result = function(input)
+      assert result == expected
+  \```
+- [ ] **Step 2: Run and verify it fails**
+- [ ] **Step 3: Implement minimal code to pass**
+- [ ] **Step 4: Run tests and verify all green**
+- [ ] **Step 5: Commit**
+```
+
+## Rules
+
+- Each task MUST be completable in 2-5 minutes. If it takes longer, split it.
+- File paths MUST be exact paths verified against the actual codebase. Do not guess.
+- Include test code snippets for every task that involves code changes.
+- Follow TDD pattern: write the failing test first, then implement.
+- Read design.md before starting. Do not ask the user to repeat what was already decided.
+- Present incrementally — do not dump the entire plan at once.
+- Resolve the branch name via `git branch --show-current` for the artifact path.
