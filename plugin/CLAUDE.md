@@ -14,6 +14,7 @@ Artifacts:
 - `plan.md` — Implementation plan
 - `criteria.md` — Evaluation criteria document
 - `review-report.md` — Review report with verdicts
+- `pr-body.md` — PR body (optional, from pr skill)
 
 ## Reference Documents
 
@@ -49,6 +50,8 @@ Apply its 5-step gate function (IDENTIFY → RUN → READ → VERIFY → CLAIM) 
 | `criteria` | Evaluation criteria | fork + criteria-builder |
 | `implement` | Execute plan | main |
 | `honk` | Code review + verdicts | fork + reviewer |
+| `pr` | PR body generation | fork |
+| `update-docs` | Convention/ADR management | main |
 
 ## Pipeline Rules
 
@@ -56,3 +59,4 @@ Apply its 5-step gate function (IDENTIFY → RUN → READ → VERIFY → CLAIM) 
 2. When generating evaluation criteria, do NOT include the entire conventions.yaml or decisions.yaml. Extract only items relevant to the current task.
 3. All code review comments MUST be grounded in evaluation criteria. Do not leave opinion-based reviews without evidence.
 4. When requesting user confirmation, always include a summary of ambiguous discussion points that need clarification.
+5. The `update-docs` skill is standalone and can be invoked at any time, independent of pipeline state. It always reads both documents for bidirectional consistency checking before making changes.

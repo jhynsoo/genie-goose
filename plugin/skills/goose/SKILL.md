@@ -3,7 +3,7 @@ name: goose
 description: >
   Run the development workflow pipeline.
   Executes rub, architecture, intent, write-plan,
-  criteria, implement, honk in sequence.
+  criteria, implement, honk, pr in sequence.
 disable-model-invocation: true
 ---
 
@@ -69,6 +69,13 @@ Invoke `/genie-goose:honk`
 - Output: `.goose-artifacts/{branch}/review-report.md`
 - Runs via reviewer subagent. Presents ACCEPT/REJECT verdicts for user confirmation, then fixes and QA.
 
+### Step 8: PR (Optional)
+Invoke `/genie-goose:pr`
+- Input: all artifacts + git diff + review-report.md
+- Output: `.goose-artifacts/{branch}/pr-body.md`
+- Runs in forked context. Presents draft + discussion points for user feedback.
+- Skip this step if the user does not intend to create a PR — ask before proceeding.
+
 ## Completion
 
 After all steps complete, summarize:
@@ -77,3 +84,4 @@ After all steps complete, summarize:
 - Implementation plan (link to plan.md)
 - Review results (link to review-report.md)
 - Any REJECT verdict items for the user to reconsider
+- PR body ready (link to pr-body.md) — if generated

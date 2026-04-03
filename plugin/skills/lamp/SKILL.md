@@ -58,6 +58,8 @@ When you invoke a skill, its content is loaded and presented to you — follow i
 | Set up evaluation criteria, review standards | `/genie-goose:criteria` | Needs intent.md + conventions.yaml |
 | Execute the plan, start implementing | `/genie-goose:implement` | Needs plan.md + intent.md |
 | Code review, review changes | `/genie-goose:honk` | Needs criteria.md + intent.md + diff |
+| Create PR, generate PR body, prepare for merge | `/genie-goose:pr` | Needs review-report.md + intent.md + diff |
+| Update conventions, manage decisions, update ADR | `/genie-goose:update-docs` | Standalone — no pipeline prerequisites |
 | Verify completion, prove it works | `/genie-goose:polish` | Any time |
 | Simple bug fix, quick edit, ad-hoc task | No skill needed | Apply polish before claiming done |
 
@@ -108,6 +110,8 @@ Before invoking a skill, check that its prerequisite artifacts exist in `.goose-
 | `criteria` | `intent.md` + `.goose/conventions.yaml` |
 | `implement` | `plan.md`, `intent.md` |
 | `honk` | `criteria.md`, `intent.md` + git diff |
+| `pr` | `review-report.md`, `intent.md` + git diff |
+| `update-docs` | `.goose/conventions.yaml` or `.goose/decisions.yaml` (at least one must exist) |
 | `polish` | — (none) |
 
 If a prerequisite is missing, inform the user which prior step to run. Example:
@@ -132,6 +136,8 @@ Not every request needs a genie-goose skill. These can proceed normally:
 - Questions about the codebase
 - Exploratory tasks
 - Configuration changes
+
+**Note:** `/genie-goose:update-docs` is a standalone skill, not a pipeline step. Route to it when the user wants to manage conventions or decisions directly, regardless of pipeline state.
 
 **However:** Even for non-pipeline work, apply `/genie-goose:polish` before claiming the work is done. Evidence before claims, always.
 
