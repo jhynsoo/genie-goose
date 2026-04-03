@@ -1,13 +1,13 @@
 ---
-name: brainstorm
+name: rub
 description: >
-  Develop ideas into concrete designs through collaborative brainstorming.
+  Rub the lamp — refine requirements through collaborative brainstorming.
   Identify purpose, constraints, and success criteria,
   then propose 2-3 approaches with trade-offs.
 disable-model-invocation: true
 ---
 
-# Brainstorm
+# Rub
 
 Develop the user's idea into a concrete design through collaborative dialogue.
 
