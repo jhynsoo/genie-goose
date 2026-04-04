@@ -4,7 +4,7 @@
 
 Pipeline-based development workflow plugin for Claude Code.
 
-Runs a structured 7-step pipeline — **rub → architecture → intent → write-plan → criteria → implement → honk** — so that every feature goes through proper design, documented intent, detailed planning, and evidence-based code review.
+Runs a structured 9-step pipeline — **rub → architecture → intent → write-plan → criteria → implement → honk → pr → finish** — so that every feature goes through proper design, documented intent, detailed planning, evidence-based code review, and verified completion.
 
 ## Installation
 
@@ -63,7 +63,7 @@ Run the complete workflow with a single command:
 /genie-goose:goose build a user authentication system
 ```
 
-This executes all 7 steps in sequence, pausing for your input between steps.
+This executes all 9 steps in sequence, pausing for your input between steps.
 
 ### Individual Steps
 
@@ -78,6 +78,9 @@ You can also run each step independently:
 | `/genie-goose:criteria` | Extract relevant conventions/decisions and build review criteria |
 | `/genie-goose:implement` | Execute the plan checklist step by step |
 | `/genie-goose:honk` | Evidence-based code review with ACCEPT/REJECT verdicts |
+| `/genie-goose:pr` | Generate PR body from pipeline artifacts |
+| `/genie-goose:finish` | Pipeline completion — verify, merge/PR/keep/discard |
+| `/genie-goose:debug` | Systematic debugging — reproduce, isolate, prove, fix |
 
 ### Pipeline Flow
 
@@ -101,6 +104,14 @@ implement       ←── plan.md + intent.md
 honk            ←── criteria.md + intent.md + git diff
                     │
                     → review-report.md
+                                      │
+pr              ←── intent.md + review-report.md + git diff
+                    │
+                    → pr-body.md
+                                      │
+finish          ←── review-report.md (+ pr-body.md)
+                    │
+                    → merge / PR / keep / discard
 ```
 
 All artifacts are saved to `.goose-artifacts/{branch-name}/`.

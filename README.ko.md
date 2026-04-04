@@ -4,7 +4,7 @@
 
 Claude Code용 파이프라인 기반 개발 워크플로우 플러그인.
 
-**rub → architecture → intent → write-plan → criteria → implement → honk** 7단계 파이프라인을 통해 모든 기능이 체계적인 설계, 설계 의도 문서화, 상세 구현 계획, 근거 기반 코드 리뷰를 거치도록 합니다.
+**rub → architecture → intent → write-plan → criteria → implement → honk → pr → finish** 9단계 파이프라인을 통해 모든 기능이 체계적인 설계, 설계 의도 문서화, 상세 구현 계획, 근거 기반 코드 리뷰, 검증된 완료를 거치도록 합니다.
 
 ## 설치
 
@@ -63,7 +63,7 @@ echo ".goose-artifacts/" >> .gitignore
 /genie-goose:goose 사용자 인증 시스템 구축
 ```
 
-7단계를 순서대로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다.
+9단계를 순서대로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다.
 
 ### 개별 단계
 
@@ -78,6 +78,9 @@ echo ".goose-artifacts/" >> .gitignore
 | `/genie-goose:criteria` | 관련 컨벤션/결정을 추출하여 리뷰 평가 기준 수립 |
 | `/genie-goose:implement` | 계획 체크리스트를 단계별로 실행 |
 | `/genie-goose:honk` | 근거 기반 코드 리뷰 — ACCEPT/REJECT 판정 |
+| `/genie-goose:pr` | 파이프라인 산출물로 PR body 생성 |
+| `/genie-goose:finish` | 파이프라인 완료 — 검증, 병합/PR/유지/폐기 |
+| `/genie-goose:debug` | 체계적 디버깅 — 재현, 격리, 원인 증명, 수정 |
 
 ### 파이프라인 흐름
 
@@ -101,6 +104,14 @@ implement       ←── plan.md + intent.md
 honk            ←── criteria.md + intent.md + git diff
                     │
                     → review-report.md
+                                      │
+pr              ←── intent.md + review-report.md + git diff
+                    │
+                    → pr-body.md
+                                      │
+finish          ←── review-report.md (+ pr-body.md)
+                    │
+                    → merge / PR / keep / discard
 ```
 
 모든 산출물은 `.goose-artifacts/{branch-name}/`에 저장됩니다.

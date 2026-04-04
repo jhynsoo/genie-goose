@@ -20,6 +20,8 @@ Available skills (all require manual invocation):
 - `/genie-goose:implement` — Step 6: Implementation
 - `/genie-goose:honk` — Step 7: Code review with verdicts (subagent)
 - `/genie-goose:pr` — Step 8: PR body generation (fork)
+- `/genie-goose:finish` — Step 9: Pipeline completion — verify, merge/PR/keep/discard
+- `/genie-goose:debug` — Systematic debugging with root-cause analysis (standalone)
 - `/genie-goose:update-docs` — Convention/ADR management (standalone)
 
 ## Plugin Structure

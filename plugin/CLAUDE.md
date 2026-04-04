@@ -15,6 +15,7 @@ Artifacts:
 - `criteria.md` — Evaluation criteria document
 - `review-report.md` — Review report with verdicts
 - `pr-body.md` — PR body (optional, from pr skill)
+- `debug-report.md` — Debug report with root-cause analysis (from debug skill)
 
 ## Reference Documents
 
@@ -51,6 +52,8 @@ Apply its 5-step gate function (IDENTIFY → RUN → READ → VERIFY → CLAIM) 
 | `implement` | Execute plan | main |
 | `honk` | Code review + verdicts | fork + reviewer |
 | `pr` | PR body generation | fork |
+| `finish` | Pipeline completion | main |
+| `debug` | Systematic debugging | main |
 | `update-docs` | Convention/ADR management | main |
 
 ## Pipeline Rules
