@@ -55,6 +55,8 @@ After the reviewer subagent returns review-report.md:
 
 2. **Collect all verdicts** before making any code changes. Do not start fixing until the user has reviewed the entire batch.
 
+<!-- HARD-GATE: Do not begin fixing until ALL verdicts are collected from the user -->
+
 3. **Fix all ACCEPT items**, then apply the `/genie-goose:polish` gate (RUN tests → READ output → VERIFY pass) before committing.
 
 4. **Record REJECT reasons** provided by the user.
@@ -68,6 +70,7 @@ After the reviewer subagent returns review-report.md:
    - **Verdict: REJECT** — {User's reason for rejection}.
    ```
 
+<!-- HARD-GATE: Do not claim review cycle complete without fresh full-suite polish gate evidence -->
 6. **QA pass:** Apply the `/genie-goose:polish` gate for final verification — run full build + test suite, read output, verify 0 failures before claiming the review cycle is complete.
 
 ## Priority Levels
@@ -84,3 +87,13 @@ After the reviewer subagent returns review-report.md:
 - When suggesting changes, MUST explain side effects.
 - Never auto-fix without user verdict. Always present ACCEPT/REJECT choice first.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+
+## Rationalizations You Must Reject
+
+| Excuse | Reality | Required Action |
+|--------|---------|-----------------|
+| "This criterion obviously applies, no citation needed" | Every comment must trace to criteria.md | Find and cite the specific criterion ID before writing the comment |
+| "This is clearly an ACCEPT, I can auto-fix" | Verdicts come from the user, not the agent | Present all comments → collect all verdicts → then fix |
+| "The user probably doesn't care about this p1" | p1 means must-fix — skipping requires explicit REJECT | Present the p1 with full detail; only skip on explicit user REJECT with justification |
+| "All individual fixes passed, no need for final QA" | Individual passes do not prove integrated correctness | Run full build + test suite as final QA via `/genie-goose:polish` |
+| "These are all minor, just ACCEPT all" | Batch-approving skips judgment on each item | Present each priority group separately; user must confirm each group |

@@ -3,7 +3,7 @@ name: goose
 description: >
   Run the development workflow pipeline.
   Executes rub, architecture, intent, write-plan,
-  criteria, implement, honk, pr in sequence.
+  criteria, implement, honk, pr, finish in sequence.
 disable-model-invocation: true
 ---
 
@@ -76,12 +76,27 @@ Invoke `/genie-goose:pr`
 - Runs in forked context. Presents draft + discussion points for user feedback.
 - Skip this step if the user does not intend to create a PR — ask before proceeding.
 
+### Step 9: Finish
+Invoke `/genie-goose:finish`
+- Input: review-report.md + all pipeline artifacts
+- Verifies all work, presents merge/PR/keep/discard options, executes the user's choice.
+- This step always runs — it replaces the implicit pipeline ending.
+
+<!-- HARD-GATE: Do not proceed to completion without explicit user approval of each prior step's output -->
+
 ## Completion
 
-After all steps complete, summarize:
-- What was built (link to design.md)
-- Architecture overview (link to architecture.md)
-- Implementation plan (link to plan.md)
-- Review results (link to review-report.md)
-- Any REJECT verdict items for the user to reconsider
-- PR body ready (link to pr-body.md) — if generated
+The `/genie-goose:finish` step handles final verification, user options, and cleanup summary.
+If the user skips the finish step, fall back to reporting:
+- Artifacts created in `.goose-artifacts/{branch}/`
+- Any remaining action items (REJECT verdicts to reconsider)
+
+## Pipeline Integrity — Rationalizations You Must Reject
+
+| Excuse | Reality | Required Action |
+|--------|---------|-----------------|
+| "Brainstorming isn't needed for this small feature" | Small features benefit most from clear scope | Run rub step — if truly trivial, brainstorming will be fast |
+| "The user seems busy, I'll just proceed" | Every step requires user approval before advancing | Confirm with the user — never auto-advance between pipeline steps |
+| "I can do architecture and planning together" | Each step has distinct outputs and approval gates | Execute each step separately with its own artifact and approval |
+| "We already know the answer, skip to implement" | Skipping design steps creates undocumented decisions | Run every step — if the answer is obvious, the step will be quick |
+| "The user said 'just do it'" | 'Just do it' means run the pipeline efficiently, not skip steps | Acknowledge urgency, run steps briskly, but do not skip any |

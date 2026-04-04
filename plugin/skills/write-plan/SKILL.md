@@ -35,6 +35,7 @@ Create a detailed implementation plan based on the architecture and design inten
 
 4. **Present the plan section by section.** Ask the user to approve each task before moving on. If the user requests changes, revise and re-present.
 
+<!-- HARD-GATE: Do not save plan.md until every task has exact file paths, test code, and 2-5 minute scope -->
 5. **Save artifact** to `.goose-artifacts/{branch}/plan.md` after full approval.
 
 ## Artifact Format
@@ -76,3 +77,13 @@ Create a detailed implementation plan based on the architecture and design inten
 - Read design.md before starting. Do not ask the user to repeat what was already decided.
 - Present incrementally — do not dump the entire plan at once.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+
+## Rationalizations You Must Reject
+
+| Excuse | Reality | Required Action |
+|--------|---------|-----------------|
+| "The implementer will figure out the details" | Vague tasks cause deviations and rework | Specify exact file paths, step-by-step instructions, and test code |
+| "Tests are obvious, no need to specify" | Obvious tests get skipped; specified tests get written | Include test code snippets for every task with code changes |
+| "This is really one logical unit" | If it takes more than 5 minutes, it is too big | Split into sub-tasks each completable in 2-5 minutes |
+| "I'll add edge case handling later" | Later never comes — plan it now | Include edge case handling as explicit tasks in the plan |
+| "The file paths are approximately right" | Approximate paths cause the implementer to guess | Verify every file path against the actual codebase before including it |
