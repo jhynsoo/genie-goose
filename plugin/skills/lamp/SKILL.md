@@ -50,7 +50,7 @@ When you invoke a skill, its content is loaded and presented to you — follow i
 
 | User Intent | Skill | Notes |
 |-------------|-------|-------|
-| Build a new feature end-to-end, full workflow | `/genie-goose:goose` | Full 7-step pipeline |
+| Build a new feature end-to-end, full workflow | `/genie-goose:goose` | Full 9-step pipeline |
 | "Let's brainstorm", "I have an idea", explore approaches | `/genie-goose:rub` | Step 1 entry point |
 | Design architecture, structure, components | `/genie-goose:architecture` | Needs design.md |
 | Document design intent, check convention conflicts | `/genie-goose:intent` | Needs design.md + architecture.md |
@@ -59,9 +59,11 @@ When you invoke a skill, its content is loaded and presented to you — follow i
 | Execute the plan, start implementing | `/genie-goose:implement` | Needs plan.md + intent.md |
 | Code review, review changes | `/genie-goose:honk` | Needs criteria.md + intent.md + diff |
 | Create PR, generate PR body, prepare for merge | `/genie-goose:pr` | Needs review-report.md + intent.md + diff |
+| Finish up, done, merge after review, wrap up, clean up | `/genie-goose:finish` | Needs review-report.md |
 | Update conventions, manage decisions, update ADR | `/genie-goose:update-docs` | Standalone — no pipeline prerequisites |
 | Verify completion, prove it works | `/genie-goose:polish` | Any time |
-| Simple bug fix, quick edit, ad-hoc task | No skill needed | Apply polish before claiming done |
+| Fix a bug, debug, investigate error, something broken/failing | `/genie-goose:debug` | Standalone — no prerequisites |
+| Quick one-line edit, ad-hoc non-bug task | No skill needed | Apply polish before claiming done |
 
 ## Routing Flowchart
 
@@ -88,10 +90,19 @@ digraph routing {
     is_subagent -> full_pipeline [label="no"];
     full_pipeline -> goose [label="yes"];
     full_pipeline -> specific_step [label="no"];
+    is_debugging [label="Debugging or\nfixing a bug?" shape=diamond];
+    debug [label="Invoke /genie-goose:debug" shape=box style=filled fillcolor=lightsalmon];
+    is_wrapping_up [label="Wrapping up after\ncode review?" shape=diamond];
+    finish [label="Invoke /genie-goose:finish" shape=box style=filled fillcolor=lightgreen];
+
     specific_step -> check_prereqs [label="yes"];
-    specific_step -> is_completing [label="no"];
+    specific_step -> is_debugging [label="no"];
     check_prereqs -> invoke_skill [label="yes"];
     check_prereqs -> report_missing [label="no"];
+    is_debugging -> debug [label="yes"];
+    is_debugging -> is_wrapping_up [label="no"];
+    is_wrapping_up -> finish [label="yes"];
+    is_wrapping_up -> is_completing [label="no"];
     is_completing -> polish [label="yes"];
     is_completing -> normal [label="no"];
 }
@@ -113,6 +124,8 @@ Before invoking a skill, check that its prerequisite artifacts exist in `.goose-
 | `pr` | `review-report.md`, `intent.md` + git diff |
 | `update-docs` | `.goose/conventions.yaml` or `.goose/decisions.yaml` (at least one must exist) |
 | `polish` | — (none) |
+| `finish` | `review-report.md` |
+| `debug` | — (none) |
 
 If a prerequisite is missing, inform the user which prior step to run. Example:
 > `architecture.md` not found. Run `/genie-goose:architecture` first (or `/genie-goose:goose` for the full pipeline).
