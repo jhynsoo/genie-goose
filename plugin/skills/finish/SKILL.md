@@ -1,0 +1,91 @@
+---
+name: finish
+description: >
+  Pipeline completion — verify all work, present
+  merge/PR/keep/discard options, execute choice, clean up.
+disable-model-invocation: true
+---
+
+# Finish
+
+Pipeline completion — verify, present options, execute, clean up.
+
+## Prerequisites
+
+- `.goose-artifacts/{branch}/review-report.md` must exist. If not, inform the user to run `/genie-goose:honk` first.
+- All ACCEPT items in review-report.md should have "Fixed" status.
+
+## Procedure
+
+### Step 1: VERIFY — Final Health Check
+
+1. Run full test suite + build via `/genie-goose:polish` gate (IDENTIFY → RUN → READ → VERIFY → CLAIM).
+2. Check for uncommitted changes (`git status`). All changes must be committed.
+3. Cross-reference review-report.md: verify all ACCEPT items have "Fixed" status.
+4. If any check fails, report the issue and **stop** — do not present options until verification passes.
+
+<!-- HARD-GATE: Do not present options until all verification checks pass with fresh evidence -->
+
+### Step 2: PRESENT OPTIONS
+
+Present the user with exactly 4 choices. Do not suggest a default — wait for the user to choose.
+
+```
+Pipeline complete. All verifications passed. Choose how to proceed:
+
+1. **Merge locally** — Merge {branch} into {base-branch}, delete feature branch
+2. **Create PR** — Generate PR body and create GitHub PR
+3. **Keep branch** — Leave as-is for later
+4. **Discard** — Delete branch and all changes (requires double confirmation)
+```
+
+### Step 3: EXECUTE
+
+**Option 1 — Merge locally:**
+1. Verify the base branch is up to date: `git fetch origin {base-branch}`
+2. Switch to base branch: `git checkout {base-branch}`
+3. Merge: `git merge {branch}`
+4. Delete feature branch: `git branch -d {branch}`
+5. Report: merge commit hash, branch deleted
+
+**Option 2 — Create PR:**
+1. Check if `.goose-artifacts/{branch}/pr-body.md` exists.
+   - If not: invoke `/genie-goose:pr` to generate it.
+2. Push branch to remote: `git push -u origin {branch}`
+3. Create PR using `gh pr create` with the pr-body.md content.
+4. Report: PR URL.
+
+**Option 3 — Keep branch:**
+1. Report current branch status: ahead/behind counts, uncommitted changes.
+2. Summarize artifacts in `.goose-artifacts/{branch}/`.
+
+**Option 4 — Discard:**
+1. First confirmation: "This will delete branch {branch} and all uncommitted changes. Type 'discard' to confirm."
+2. Second confirmation: "Are you sure? This cannot be undone."
+3. Only after both confirmations: switch to base branch, delete feature branch.
+4. Report: branch deleted.
+
+### Step 4: CLEAN UP — Post-Completion Report
+
+Regardless of the option chosen, summarize:
+- What was done (merge / PR created / branch kept / discarded)
+- Pipeline artifacts created during this session (list files in `.goose-artifacts/{branch}/`)
+- Any remaining action items (e.g., REJECT verdicts to reconsider, PR review pending)
+
+## Rationalizations You Must Reject
+
+| Excuse | Reality | Required Action |
+|--------|---------|-----------------|
+| "Tests already passed in implement" | Code changed during honk review fixes | Run the full suite again with fresh evidence |
+| "PR doesn't need a body" | pr-body.md exists or can be generated — PRs deserve context | Generate pr-body.md via `/genie-goose:pr` if it doesn't exist |
+| "I can skip verification, honk already reviewed" | honk reviewed the diff, not the integrated result after fixes | Run full verification — build, tests, lint — on the final state |
+| "The user said merge, no need to verify first" | Merging broken code is worse than a delay | Always run Step 1 verification before presenting options |
+| "Discard doesn't need double confirmation" | Deleting work is irreversible | Always require two explicit confirmations |
+
+## Integration
+
+- Invokes `/genie-goose:polish` for Step 1 verification.
+- Invokes `/genie-goose:pr` if PR is chosen and pr-body.md is missing.
+- Reads: `review-report.md`, `pr-body.md` (optional).
+- Prerequisite: `review-report.md` must exist (honk must be completed).
+- Resolve the branch name via `git branch --show-current` for the artifact path.
