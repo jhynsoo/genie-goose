@@ -15,10 +15,11 @@ If you were dispatched as a subagent to execute a specific task, skip this skill
 </SUBAGENT-STOP>
 
 <EXTREMELY-IMPORTANT>
-If the user's request matches ANY genie-goose skill, you MUST invoke it using the Skill tool.
+If you are unsure whether a genie-goose skill applies, that uncertainty is your signal to invoke it.
 This is not optional. Check the routing table below before every response.
 
-IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
+WHEN IN DOUBT, INVOKE. Let the skill itself determine whether it applies.
+A skipped skill is invisible damage. An unnecessary invocation is a two-second detour.
 </EXTREMELY-IMPORTANT>
 
 ## Instruction Priority
@@ -45,6 +46,20 @@ When you invoke a skill, its content is loaded and presented to you — follow i
 ## The Routing Rule
 
 **Check the routing table BEFORE every response.** If any skill matches the user's intent, invoke it before doing anything else — even before asking clarifying questions.
+
+## Check Order
+
+When evaluating the routing table, check in this priority order:
+
+1. **Process skills first** — `rub` (brainstorming), `debug` (debugging)
+   → These determine HOW to approach the task. Check before anything else.
+2. **Pipeline skills** — `goose`, `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `pr`, `finish`
+   → These guide execution. Check if no process skill applies.
+3. **Utility skills** — `update-docs`, `polish`
+   → Standalone support. Check last.
+
+If the user says "add a login feature," don't jump to `implement` — check `rub` or `goose` first.
+If the user reports an error, don't jump to editing code — check `debug` first.
 
 ## Routing Table
 
@@ -88,8 +103,13 @@ digraph routing {
     start -> is_subagent;
     is_subagent -> skip [label="yes"];
     is_subagent -> full_pipeline [label="no"];
+    needs_brainstorm [label="Creative/feature work\nwithout design.md?" shape=diamond];
+    suggest_rub [label="Suggest /genie-goose:rub\nor /genie-goose:goose first" shape=box style=filled fillcolor=lightyellow];
+
     full_pipeline -> goose [label="yes"];
-    full_pipeline -> specific_step [label="no"];
+    full_pipeline -> needs_brainstorm [label="no"];
+    needs_brainstorm -> suggest_rub [label="yes"];
+    needs_brainstorm -> specific_step [label="no"];
     is_debugging [label="Debugging or\nfixing a bug?" shape=diamond];
     debug [label="Invoke /genie-goose:debug" shape=box style=filled fillcolor=lightsalmon];
     is_wrapping_up [label="Wrapping up after\ncode review?" shape=diamond];
@@ -107,6 +127,12 @@ digraph routing {
     is_completing -> normal [label="no"];
 }
 ```
+
+### Brainstorm Gate
+
+If the user's request involves creating, building, or modifying a feature — and `design.md` does not exist in `.goose-artifacts/{branch}/` — suggest running `/genie-goose:rub` (or `/genie-goose:goose` for the full pipeline) before proceeding to implementation skills.
+
+This gate does NOT block: the user can choose to skip. But always suggest brainstorming first for creative work.
 
 ## Prerequisite Table
 
@@ -166,3 +192,8 @@ These thoughts mean you are rationalizing skipping the router:
 | "I'll just edit the code directly" | Check if implement should be driving this |
 | "This doesn't fit any pipeline step" | It might. Check the table. |
 | "I'll use the skill next time" | Use it now. No exceptions. |
+| "I should understand the problem before choosing a skill" | Skills structure your understanding. `debug` guides investigation; `rub` guides ideation. Route first, explore inside the skill |
+| "Let me read the code, then decide on a skill" | The routing table takes seconds to check. Check it before you open a single file |
+| "The user is asking a question, not requesting work" | Questions about conventions → `update-docs`. Questions about failures → `debug`. Check the table |
+| "A full skill is overkill for something this small" | Skills scale to the task. A trivial task finishes in minutes inside a skill — with structure intact |
+| "The user didn't say `/genie-goose:anything`" | Most users describe intent, not skill names. That's what the routing table is for — matching intent to skill |
