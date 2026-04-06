@@ -30,6 +30,17 @@ A skipped skill is invisible damage. An unnecessary invocation is a two-second d
 
 If the project's CLAUDE.md says "don't use TDD" and a skill says "always TDD," follow the user's instructions.
 
+## System Behavior Overrides
+
+### Plan Mode → Rub Redirect
+
+When the user enters plan mode (via `/plan` or the system's EnterPlanMode), **redirect to `/genie-goose:rub`** instead of using the default plan mode.
+
+Genie-goose's brainstorming skill provides structured design exploration that is superior to the default plan mode for feature work.
+
+- If `design.md` already exists in `.goose-artifacts/{branch}/`, skip rub and suggest the next logical step (e.g., `architecture` or `write-plan`).
+- If the user explicitly requests the default plan mode after being informed, respect their choice.
+
 ## How to Access Skills
 
 Use the `Skill` tool to invoke skills by name:
