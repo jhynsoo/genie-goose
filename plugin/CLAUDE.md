@@ -71,10 +71,17 @@ Apply its 5-step gate function (IDENTIFY → RUN → READ → VERIFY → CLAIM) 
 
 ## Workflow Rules
 
-1. Steps running in fork/subagent MUST only create artifact files and MUST NOT modify source code (except review auto-fix).
+1. Steps running in fork/subagent MUST only create artifact files and MUST NOT modify source code (except review auto-fix and `.goose/` configuration updates after user approval).
 2. When generating evaluation criteria, do NOT include the entire conventions.yaml or decisions.yaml. Extract only items relevant to the current task.
 3. All code review comments MUST be grounded in evaluation criteria. Do not leave opinion-based reviews without evidence.
 4. When requesting user confirmation, always include a summary of ambiguous discussion points that need clarification.
 5. The `update-docs` skill is standalone and can be invoked at any time, independent of pipeline state. It always reads both documents for bidirectional consistency checking before making changes.
 6. Skills can be invoked independently. Missing prerequisite artifacts produce warnings, not blocks. The user can always choose to proceed with reduced context.
 7. The `polish` verification gate applies to ALL workflows — full pipeline, recommended routes, and direct invocation alike.
+
+## Skill Frontmatter
+
+Skills use standard frontmatter fields (`name`, `description`, `disable-model-invocation`) plus two informational fields:
+
+- `context: fork` — The skill expects to run in a forked/subagent context and should only produce artifact files, not modify source code.
+- `agent: <name>` — A specific agent persona (defined in `agents/`) should be dispatched for execution. These fields guide model behavior but do not trigger automatic enforcement.
