@@ -13,12 +13,19 @@ Execute the implementation plan by following the plan.md checklist step by step.
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/plan.md` must exist. If not, inform the user to run `/genie-goose:write-plan` first.
-- `.goose-artifacts/{branch}/intent.md` must exist.
+- `.goose-artifacts/{branch}/plan.md` — provides a verified task checklist with exact file paths and test code.
+- `.goose-artifacts/{branch}/intent.md` — provides design rationale and intentional exclusions.
+
+If prerequisite artifacts are missing:
+1. **Warn:** "Without plan.md, implementation will lack a verified task checklist, increasing the risk of scope creep. Without intent.md, intentional exclusions cannot be checked."
+2. **Ask:** proceed anyway, or run the prerequisite step first?
+3. If the user confirms, proceed using their instructions directly.
+
+**When operating without plan.md:** Create an ad-hoc task list from the user's request before starting implementation. Confirm the list with the user. Apply the same verification discipline (polish gate per task, frequent commits).
 
 ## Procedure
 
-1. **Read** plan.md and intent.md to understand what to build, why, and in what order.
+1. **Read** plan.md and intent.md (if available) to understand what to build, why, and in what order. If plan.md is missing and the user chose to proceed, work from the ad-hoc task list.
 
 2. **Execute each task** in plan.md sequentially:
    - Follow the steps exactly as written in the plan

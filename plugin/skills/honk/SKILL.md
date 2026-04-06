@@ -15,9 +15,16 @@ Perform an evidence-based code review using the evaluation criteria established 
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/criteria.md` must exist.
-- `.goose-artifacts/{branch}/intent.md` must exist.
+- `.goose-artifacts/{branch}/criteria.md` — provides grounded evaluation standards with criterion IDs.
+- `.goose-artifacts/{branch}/intent.md` — provides design rationale for intent-implementation mismatch detection.
 - Implementation must be complete (there should be a meaningful git diff).
+
+If criteria.md or intent.md is missing:
+1. **Warn:** "Without criteria.md, the review will lack grounded evaluation standards. Without intent.md, intent-implementation mismatch detection is unavailable."
+2. **Ask:** proceed anyway, or run the prerequisite step first?
+3. If the user confirms, proceed with fallback review standards.
+
+**Fallback when criteria.md is missing:** Review against (a) `.goose/conventions.yaml` directly if available, (b) general code quality standards. Flag to the user that review depth is reduced.
 
 ## Procedure
 
@@ -82,7 +89,7 @@ After the reviewer subagent returns review-report.md:
 
 ## Rules
 
-- All comments MUST cite a criterion from criteria.md. No opinion-based reviews.
+- All comments MUST cite a criterion from criteria.md. If criteria.md is unavailable, cite the convention ID from conventions.yaml or the specific best-practice standard being applied. No opinion-based reviews.
 - Respect intentional design decisions. Flag only intent-implementation mismatches.
 - When suggesting changes, MUST explain side effects.
 - Never auto-fix without user verdict. Always present ACCEPT/REJECT choice first.

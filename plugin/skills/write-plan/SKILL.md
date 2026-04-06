@@ -13,12 +13,17 @@ Create a detailed implementation plan based on the architecture and design inten
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/architecture.md` must exist.
-- `.goose-artifacts/{branch}/intent.md` must exist.
+- `.goose-artifacts/{branch}/architecture.md` — provides component structure and file layout.
+- `.goose-artifacts/{branch}/intent.md` — provides design rationale and intentional exclusions.
+
+If prerequisite artifacts are missing:
+1. **Warn:** "Without architecture.md, the plan may not align with the intended component structure. Without intent.md, intentional exclusions and design rationale will be unavailable."
+2. **Ask:** proceed anyway, or run the prerequisite step first?
+3. If the user confirms, proceed using codebase exploration and user direction.
 
 ## Procedure
 
-1. **Read** architecture.md and intent.md to understand what to build and why.
+1. **Read** architecture.md and intent.md (if available) to understand what to build and why. If artifacts are missing and the user chose to proceed, derive structure from codebase exploration and user direction.
 
 2. **Explore the codebase** to understand:
    - Existing directory structure and file organization

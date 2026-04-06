@@ -15,9 +15,14 @@ Establish evaluation criteria for the upcoming code review by extracting relevan
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/intent.md` must exist.
-- `.goose/conventions.yaml` must exist. If not, inform the user to copy the template from the plugin: `mkdir -p .goose && cp {plugin-path}/.goose/conventions.template.yaml .goose/conventions.yaml`
-- `.goose/decisions.yaml` is optional. If it exists, relevant ADR items will be included in the criteria.
+- `.goose-artifacts/{branch}/intent.md` — provides task-specific context for filtering relevant conventions.
+- `.goose/conventions.yaml` — **required**. The source of evaluation criteria. If not found, inform the user: `mkdir -p .goose && cp {plugin-path}/.goose/conventions.template.yaml .goose/conventions.yaml`
+- `.goose/decisions.yaml` — optional. If it exists, relevant ADR items will be included in the criteria.
+
+If intent.md is missing:
+1. **Warn:** "Without intent.md, criteria extraction will lack task-specific context and may include irrelevant conventions."
+2. **Ask:** proceed anyway, or run `/genie-goose:intent` first?
+3. If the user confirms, use the user's task description and git diff to infer scope for convention filtering.
 
 ## Procedure
 
