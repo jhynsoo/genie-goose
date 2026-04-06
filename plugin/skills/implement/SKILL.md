@@ -50,6 +50,7 @@ If prerequisite artifacts are missing:
 - Make frequent, small commits with descriptive messages.
 - Do not skip steps or reorder tasks unless there is a blocking dependency issue.
 - Before claiming any task is complete, apply the `/genie-goose:polish` verification gate. Never report "done" without fresh evidence from a verification command.
+- Resolve the branch name via `git branch --show-current` for the artifact path.
 
 ## Parallel Execution
 
