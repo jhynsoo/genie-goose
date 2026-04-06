@@ -135,6 +135,8 @@ When the user describes a task (without naming a specific skill), recommend a ro
 
 Routes are recommendations, not mandates.
 
+> **Note:** For full feature and medium task routes, `/genie-goose:receive-review` can optionally follow `honk` for stricter review processing (pushback protocol, anti-sycophancy enforcement).
+
 ## Routing Flowchart
 
 ```dot

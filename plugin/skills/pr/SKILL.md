@@ -26,7 +26,7 @@ If intent.md is missing:
 
 1. **Resolve context:**
    - Branch name via `git branch --show-current`.
-   - Base branch: default `main`, unless the user specifies otherwise.
+   - Base branch: detect via `git symbolic-ref refs/remotes/origin/HEAD | sed 's|refs/remotes/origin/||'`. If detection fails, ask the user.
 
 2. **Read inputs:**
    - Required: `intent.md`, `git diff {base}...HEAD`

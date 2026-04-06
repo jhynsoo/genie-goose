@@ -69,7 +69,8 @@ Pipeline complete. All verifications passed. Choose how to proceed:
 1. First confirmation: "This will delete branch {branch} and all uncommitted changes. Type 'discard' to confirm."
 2. Second confirmation: "Are you sure? This cannot be undone."
 3. Only after both confirmations: switch to base branch, delete feature branch.
-4. Report: branch deleted.
+4. Delete the artifact directory: `rm -rf .goose-artifacts/{branch}/`
+5. Report: branch deleted, artifacts cleaned up.
 
 ### Step 4: CLEAN UP — Post-Completion Report
 
