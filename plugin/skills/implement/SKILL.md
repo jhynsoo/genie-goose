@@ -51,6 +51,32 @@ If prerequisite artifacts are missing:
 - Do not skip steps or reorder tasks unless there is a blocking dependency issue.
 - Before claiming any task is complete, apply the `/genie-goose:polish` verification gate. Never report "done" without fresh evidence from a verification command.
 
+## Parallel Execution
+
+When the plan contains independent tasks, consider dispatching them in parallel.
+
+**When to parallelize:**
+- 3+ plan tasks that modify **different files** with no shared interfaces
+- Tasks are self-contained (each has its own test, no cross-task dependencies)
+- plan.md does not specify a sequential dependency between them
+
+**When NOT to parallelize:**
+- Tasks share files or interfaces (e.g., Task 2 imports from Task 1's output)
+- Tasks must be committed in a specific order for bisectability
+- The plan explicitly marks tasks as sequential
+
+**Pattern:**
+1. Identify independent task clusters in plan.md.
+2. For each cluster, dispatch an Agent with:
+   - The specific task(s) from plan.md
+   - intent.md for design context
+   - Instruction to apply polish gate before reporting done
+3. Review all agent results — verify no conflicting changes.
+4. Run full test suite after integrating all results.
+5. Commit per task (not per agent) for clean git history.
+
+**Default is sequential.** Only parallelize when independence is clear. When in doubt, run sequentially.
+
 ## Rationalizations You Must Reject
 
 | Excuse | Reality | Required Action |

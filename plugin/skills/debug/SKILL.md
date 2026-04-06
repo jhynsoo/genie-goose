@@ -91,6 +91,31 @@ Save to `.goose-artifacts/{branch}/debug-report.md`:
 {How to prevent this class of bug — convention update, test pattern, etc.}
 ```
 
+## Parallel Investigation
+
+When multiple independent failures exist, use parallel agents to investigate simultaneously.
+
+**When to parallelize:**
+- 3+ test files failing with **different** error messages or stack traces
+- Multiple subsystems broken with **no shared state** between them
+- Independent reproduction cases that don't interfere with each other
+
+**When NOT to parallelize:**
+- Failures share a common root cause (cascade failure)
+- Tests depend on shared state (database, file system, environment)
+- You haven't completed Phase 1 (REPRODUCE) for each failure yet
+
+**Pattern:**
+1. Complete Phase 1 (REPRODUCE) for all failures first.
+2. Group failures by independence — shared root cause = same group.
+3. For each independent group, dispatch an Agent with:
+   - The specific failure's reproduction steps and error output
+   - Scoped file paths (only the relevant module)
+   - Instruction to complete Phases 2-4 independently
+4. Review all agent results before committing — check for conflicting fixes.
+
+**Scope each agent narrowly.** "Fix all tests" is too broad. "Investigate the TypeError in `auth/login.ts:45` — reproduction: `npm test auth/login.test.ts`" is correct.
+
 ## Rationalizations You Must Reject
 
 | Excuse | Reality | Required Action |
