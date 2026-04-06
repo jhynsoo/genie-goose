@@ -11,9 +11,14 @@ PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # Read lamp (router) skill content
 lamp_content=$(cat "${PLUGIN_ROOT}/skills/lamp/SKILL.md" 2>&1 || echo "Error reading lamp skill")
 
-# Escape string for JSON embedding using bash parameter substitution.
+# Escape string for JSON embedding.
+# Prefer jq for full Unicode support; fall back to bash substitution.
 escape_for_json() {
     local s="$1"
+    if command -v jq >/dev/null 2>&1; then
+        printf '%s' "$s" | jq -Rs . | sed 's/^"//;s/"$//'
+        return
+    fi
     s="${s//\\/\\\\}"
     s="${s//\"/\\\"}"
     s="${s//$'\n'/\\n}"
