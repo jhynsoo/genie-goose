@@ -19,6 +19,7 @@ Available skills (all require manual invocation):
 - `/genie-goose:criteria` — Evaluation criteria (subagent)
 - `/genie-goose:implement` — Implementation (with or without plan.md)
 - `/genie-goose:honk` — Code review with verdicts (subagent)
+- `/genie-goose:receive-review` — Process review feedback with discipline (standalone)
 - `/genie-goose:pr` — PR body generation (fork)
 - `/genie-goose:finish` — Workflow completion — verify, merge/PR/keep/discard
 - `/genie-goose:debug` — Systematic debugging with root-cause analysis (standalone)

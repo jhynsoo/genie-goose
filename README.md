@@ -95,6 +95,7 @@ Run any skill independently:
 | `/genie-goose:criteria` | Extract relevant conventions/decisions and build review criteria |
 | `/genie-goose:implement` | Execute the plan checklist step by step |
 | `/genie-goose:honk` | Evidence-based code review with ACCEPT/REJECT verdicts |
+| `/genie-goose:receive-review` | Process review feedback with discipline — verify before accepting, push back when warranted |
 | `/genie-goose:pr` | Generate PR body from pipeline artifacts |
 | `/genie-goose:finish` | Workflow completion — verify, merge/PR/keep/discard |
 | `/genie-goose:debug` | Systematic debugging — reproduce, isolate, prove, fix |
@@ -125,6 +126,8 @@ implement       ←── plan.md + intent.md
 honk            ←── criteria.md + intent.md + git diff
                     │
                     → review-report.md
+                                      │
+receive-review  ←── review-report.md (optional, for stricter processing)
                                       │
 pr (optional)   ←── intent.md + review-report.md + git diff
                     │

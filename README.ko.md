@@ -95,6 +95,7 @@ genie-goose를 사용하는 세 가지 방법이 있습니다:
 | `/genie-goose:criteria` | 관련 컨벤션/결정을 추출하여 리뷰 평가 기준 수립 |
 | `/genie-goose:implement` | 계획 체크리스트를 단계별로 실행 |
 | `/genie-goose:honk` | 근거 기반 코드 리뷰 — ACCEPT/REJECT 판정 |
+| `/genie-goose:receive-review` | 리뷰 피드백 처리 — 수락 전 검증, 근거 있는 반론 |
 | `/genie-goose:pr` | 파이프라인 산출물로 PR body 생성 |
 | `/genie-goose:finish` | 워크플로우 완료 — 검증, 병합/PR/유지/폐기 |
 | `/genie-goose:debug` | 체계적 디버깅 — 재현, 격리, 원인 증명, 수정 |
@@ -125,6 +126,8 @@ implement       ←── plan.md + intent.md
 honk            ←── criteria.md + intent.md + git diff
                     │
                     → review-report.md
+                                      │
+receive-review  ←── review-report.md (선택, 엄격한 리뷰 처리용)
                                       │
 pr (선택)       ←── intent.md + review-report.md + git diff
                     │
