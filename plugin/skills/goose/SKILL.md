@@ -18,9 +18,9 @@ Before starting the pipeline, verify:
 
 1. **Branch:** Resolve the current branch via `git branch --show-current`. The pipeline artifacts will be stored under `.goose-artifacts/{branch}/`.
 2. **Conventions:** Check if `.goose/conventions.yaml` exists. If not, inform the user:
-   > `.goose/conventions.yaml` not found. This file is needed for evaluation criteria (step 5). Copy this plugin's `.goose/conventions.template.yaml` to `.goose/conventions.yaml` and customize it for your project.
+   > `.goose/conventions.yaml` not found. This file is needed for evaluation criteria (step 5). Run `/genie-goose:update-docs` to create it from the template, or manually copy this plugin's `.goose/conventions.template.yaml` to `.goose/conventions.yaml` and customize it.
 3. **Decisions:** Check if `.goose/decisions.yaml` exists. If not, inform the user (optional):
-   > `.goose/decisions.yaml` not found. This file is optional but recommended for tracking architecture decisions. Copy this plugin's `.goose/decisions.template.yaml` to `.goose/decisions.yaml` and customize it.
+   > `.goose/decisions.yaml` not found. This file is optional but recommended for tracking architecture decisions. Run `/genie-goose:update-docs` to create it from the template, or manually copy this plugin's `.goose/decisions.template.yaml` to `.goose/decisions.yaml` and customize it.
 4. **Artifact directory:** Create `.goose-artifacts/{branch}/` if it does not exist.
 5. **Gitignore:** Check if `.goose-artifacts/` is in `.gitignore`. If not, suggest adding it.
 

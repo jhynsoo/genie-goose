@@ -206,7 +206,7 @@ Skills are enriched by prior artifacts but most do not hard-require them. Before
 | `receive-review` | `review-report.md`, `intent.md`, `criteria.md` | review feedback (any source) |
 | `pr` | all artifacts | git diff |
 | `finish` | `review-report.md` | — |
-| `update-docs` | — | `.goose/conventions.yaml` or `.goose/decisions.yaml` (at least one) |
+| `update-docs` | — | — |
 | `polish` | — | — |
 | `debug` | — | — |
 
