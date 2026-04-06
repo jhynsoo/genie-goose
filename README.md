@@ -2,9 +2,9 @@
 
 **English** | [한국어](README.ko.md)
 
-Pipeline-based development workflow plugin for Claude Code.
+Composable development workflow plugin for Claude Code.
 
-Runs a structured 9-step pipeline — **rub → architecture → intent → write-plan → criteria → implement → honk → pr → finish** — so that every feature goes through proper design, documented intent, detailed planning, evidence-based code review, and verified completion.
+Provides a structured set of skills — brainstorming, architecture design, intent documentation, implementation planning, evaluation criteria, code review, PR generation, and verified completion — that you can compose into workflows tailored to your task size.
 
 ## Installation
 
@@ -55,22 +55,39 @@ echo ".goose-artifacts/" >> .gitignore
 
 ## Usage
 
-### Full Pipeline
+There are three ways to use genie-goose:
 
-Run the complete workflow with a single command:
+### 1. Full Pipeline
+
+Run the complete 9-step workflow with a single command:
 
 ```
 /genie-goose:goose build a user authentication system
 ```
 
-This executes all 9 steps in sequence, pausing for your input between steps.
+This executes all steps in sequence — **rub → architecture → intent → write-plan → criteria → implement → honk → pr (optional) → finish** — pausing for your input between steps. Recommended for medium-to-large features.
 
-### Individual Steps
+### 2. Recommended Route
 
-You can also run each step independently:
+The `lamp` skill router is auto-injected at session start. It classifies your task by scope and recommends a tailored route:
+
+| Task Size | Recommended Route |
+|-----------|-------------------|
+| Full feature | `rub → architecture → write-plan → implement → honk → finish` |
+| Medium task | `rub → write-plan → implement → honk → finish` |
+| Small task | `implement → finish` (or no skill needed) |
+| Debug | `debug` |
+| Documentation | `update-docs` |
+
+Just describe what you want to do — lamp will suggest the appropriate route. You can accept, adjust, or skip the recommendation.
+
+### 3. Direct Invocation
+
+Run any skill independently:
 
 | Command | Description |
 |---------|-------------|
+| `/genie-goose:goose <topic>` | Full 9-step pipeline preset |
 | `/genie-goose:rub <topic>` | Collaborative brainstorming — asks clarifying questions, proposes 2-3 approaches |
 | `/genie-goose:architecture` | Design technical architecture based on brainstorm result |
 | `/genie-goose:intent` | Document design decisions + detect conflicts with conventions/decisions |
@@ -79,10 +96,14 @@ You can also run each step independently:
 | `/genie-goose:implement` | Execute the plan checklist step by step |
 | `/genie-goose:honk` | Evidence-based code review with ACCEPT/REJECT verdicts |
 | `/genie-goose:pr` | Generate PR body from pipeline artifacts |
-| `/genie-goose:finish` | Pipeline completion — verify, merge/PR/keep/discard |
+| `/genie-goose:finish` | Workflow completion — verify, merge/PR/keep/discard |
 | `/genie-goose:debug` | Systematic debugging — reproduce, isolate, prove, fix |
+| `/genie-goose:update-docs` | Manage conventions.yaml and decisions.yaml |
+| `/genie-goose:polish` | Verification gate — evidence before claims |
 
-### Pipeline Flow
+Missing prerequisite artifacts produce warnings, not blocks — you can always proceed with reduced context.
+
+### Workflow Diagram
 
 ```
 rub ───────────→ design.md
@@ -105,16 +126,27 @@ honk            ←── criteria.md + intent.md + git diff
                     │
                     → review-report.md
                                       │
-pr              ←── intent.md + review-report.md + git diff
+pr (optional)   ←── intent.md + review-report.md + git diff
                     │
                     → pr-body.md
                                       │
-finish          ←── review-report.md (+ pr-body.md)
+finish          ←── review-report.md (optional) + pr-body.md (optional)
                     │
                     → merge / PR / keep / discard
+
+debug           ←── (standalone, no prerequisites)
+                    │
+                    → debug-report.md
 ```
 
 All artifacts are saved to `.goose-artifacts/{branch-name}/`.
+
+## Guard Rails
+
+Two skills apply to all workflows — full pipeline, recommended routes, and direct invocation alike:
+
+- **polish** — Evidence-based verification before claiming completion. 5-step gate: IDENTIFY → RUN → READ → VERIFY → CLAIM.
+- **finish** — Structured wrap-up with merge/PR/keep/discard options. Works with or without review-report.md.
 
 ## How Review Works
 

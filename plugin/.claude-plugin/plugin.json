@@ -1,6 +1,6 @@
 {
   "name": "genie-goose",
-  "description": "Pipeline-based development workflow framework with PR generation and convention/ADR management",
+  "description": "Composable development workflow framework with PR generation and convention/ADR management",
   "version": "0.2.0",
   "author": { "name": "jhynsoo" },
   "license": "MIT"
