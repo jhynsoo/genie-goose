@@ -24,7 +24,3 @@ Available skills (all require manual invocation):
 - `/genie-goose:debug` — Systematic debugging with root-cause analysis (standalone)
 - `/genie-goose:update-docs` — Convention/ADR management (standalone)
 - `/genie-goose:polish` — Verification gate (standalone)
-
-## Plugin Structure
-
-See `docs/specs/2026-04-03-v2-pipeline-redesign.md` for the v2 design spec.
