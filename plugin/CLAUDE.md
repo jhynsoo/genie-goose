@@ -63,6 +63,7 @@ Apply its 5-step gate function (IDENTIFY → RUN → READ → VERIFY → CLAIM) 
 | `criteria` | Evaluation criteria | fork + criteria-builder |
 | `implement` | Execute plan or direct tasks | main |
 | `honk` | Code review + verdicts | fork + reviewer |
+| `receive-review` | Process review feedback with discipline | main |
 | `pr` | PR body generation | fork |
 | `finish` | Workflow completion | main |
 | `debug` | Systematic debugging | main |

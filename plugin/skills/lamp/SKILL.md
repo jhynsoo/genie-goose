@@ -64,7 +64,7 @@ When evaluating the routing table, check in this priority order:
 
 1. **Process skills first** — `rub` (brainstorming), `debug` (debugging)
    → These determine HOW to approach the task. Check before anything else.
-2. **Pipeline skills** — `goose`, `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `pr`, `finish`
+2. **Pipeline skills** — `goose`, `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `receive-review`, `pr`, `finish`
    → These guide execution. Check if no process skill applies.
 3. **Utility skills** — `update-docs`, `polish`
    → Standalone support. Check last.
@@ -98,6 +98,7 @@ This classification drives the route recommendation below.
 | Set up evaluation criteria, review standards | `/genie-goose:criteria` | Requires conventions.yaml. Enriched by intent.md |
 | Execute the plan, start implementing | `/genie-goose:implement` | Enriched by plan.md + intent.md |
 | Code review, review changes | `/genie-goose:honk` | Enriched by criteria.md + intent.md. Requires git diff |
+| Process review feedback, respond to PR comments, handle review | `/genie-goose:receive-review` | Works with honk review-report.md or external reviews |
 | Create PR, generate PR body, prepare for merge | `/genie-goose:pr` | Enriched by all artifacts. Requires git diff |
 | Finish up, done, merge after review, wrap up, clean up | `/genie-goose:finish` | Works with or without review-report.md |
 | Update conventions, manage decisions, update ADR | `/genie-goose:update-docs` | Standalone — no prerequisites |
@@ -200,6 +201,7 @@ Skills are enriched by prior artifacts but most do not hard-require them. Before
 | `criteria` | `intent.md` | `conventions.yaml` |
 | `implement` | `plan.md`, `intent.md` | — |
 | `honk` | `criteria.md`, `intent.md` | git diff |
+| `receive-review` | `review-report.md`, `intent.md`, `criteria.md` | review feedback (any source) |
 | `pr` | all artifacts | git diff |
 | `finish` | `review-report.md` | — |
 | `update-docs` | — | `.goose/conventions.yaml` or `.goose/decisions.yaml` (at least one) |

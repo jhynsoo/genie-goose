@@ -69,6 +69,7 @@ Invoke `/genie-goose:honk`
 - Input: criteria.md + intent.md + git diff
 - Output: `.goose-artifacts/{branch}/review-report.md`
 - Runs via reviewer subagent. Presents ACCEPT/REJECT verdicts for user confirmation, then fixes and QA.
+- For stricter review processing (e.g., pushback protocol, anti-sycophancy), the user can invoke `/genie-goose:receive-review` after this step.
 
 ### Step 8: PR (Optional)
 Invoke `/genie-goose:pr`
