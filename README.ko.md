@@ -73,7 +73,7 @@ genie-goose를 사용하는 세 가지 방법이 있습니다:
 
 | 태스크 규모 | 추천 경로 |
 |------------|----------|
-| 대형 기능 | `rub → architecture → write-plan → implement → honk → finish` |
+| 대형 기능 | `/genie-goose:goose` (전체 9단계 파이프라인), 또는 `rub → architecture → intent → write-plan → criteria → implement → honk → finish` |
 | 중형 태스크 | `rub → write-plan → implement → honk → finish` |
 | 소형 태스크 | `implement → finish` (또는 스킬 불필요) |
 | 디버그 | `debug` |

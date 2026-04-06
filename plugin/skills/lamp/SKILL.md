@@ -112,7 +112,7 @@ When the user describes a task (without naming a specific skill), recommend a ro
 
 | Classification | Recommended Route |
 |---------------|-------------------|
-| **Full feature** | `rub → architecture → write-plan → implement → honk → finish` |
+| **Full feature** | `/genie-goose:goose` (full 9-step pipeline), or `rub → architecture → intent → write-plan → criteria → implement → honk → finish` |
 | **Medium task** | `rub → write-plan → implement → honk → finish` |
 | **Small task** | `implement → finish` (or no skill, just polish) |
 | **Debug** | `debug` |
