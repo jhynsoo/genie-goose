@@ -1,0 +1,17 @@
+{
+	"name": "genie-goose-local",
+	"owner": {
+		"name": "jhynsoo"
+	},
+	"metadata": {
+		"description": "Composable development workflow framework for Claude Code"
+	},
+	"plugins": [
+		{
+			"name": "genie-goose",
+			"source": "./",
+			"description": "Composable development workflow with guard rails, PR generation, and convention/ADR management",
+			"version": "0.2.0"
+		}
+	]
+}
