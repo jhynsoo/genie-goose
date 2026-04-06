@@ -61,24 +61,67 @@ When evaluating the routing table, check in this priority order:
 If the user says "add a login feature," don't jump to `implement` — check `rub` or `goose` first.
 If the user reports an error, don't jump to editing code — check `debug` first.
 
+## Task Classification
+
+Before routing, classify the user's request by scope:
+
+| Classification | Signal | Examples |
+|---------------|--------|----------|
+| **Full feature** | Multiple components, new API surface, architectural impact | "Build a user auth system", "Add payment processing" |
+| **Medium task** | Clear scope, 2-5 files, no new architecture | "Add input validation to the form", "Refactor the logger module" |
+| **Small task** | Single file, obvious change, minimal risk | "Fix the typo in the error message", "Add a null check" |
+| **Debug** | Error report, something broken, unexpected behavior | "Tests are failing", "Getting a 500 error on /api/users" |
+| **Documentation** | Convention/decision management | "Add a new coding standard", "Record the API versioning decision" |
+
+This classification drives the route recommendation below.
+
 ## Routing Table
 
 | User Intent | Skill | Notes |
 |-------------|-------|-------|
-| Build a new feature end-to-end, full workflow | `/genie-goose:goose` | Full 9-step pipeline |
-| "Let's brainstorm", "I have an idea", explore approaches | `/genie-goose:rub` | Step 1 entry point |
-| Design architecture, structure, components | `/genie-goose:architecture` | Needs design.md |
-| Document design intent, check convention conflicts | `/genie-goose:intent` | Needs design.md + architecture.md |
-| Write implementation plan, break into tasks | `/genie-goose:write-plan` | Needs architecture.md + intent.md |
-| Set up evaluation criteria, review standards | `/genie-goose:criteria` | Needs intent.md + conventions.yaml |
-| Execute the plan, start implementing | `/genie-goose:implement` | Needs plan.md + intent.md |
-| Code review, review changes | `/genie-goose:honk` | Needs criteria.md + intent.md + diff |
-| Create PR, generate PR body, prepare for merge | `/genie-goose:pr` | Needs review-report.md + intent.md + diff |
-| Finish up, done, merge after review, wrap up, clean up | `/genie-goose:finish` | Needs review-report.md |
-| Update conventions, manage decisions, update ADR | `/genie-goose:update-docs` | Standalone — no pipeline prerequisites |
+| Build a new feature end-to-end, full workflow | `/genie-goose:goose` | Full 9-step pipeline preset |
+| "Let's brainstorm", "I have an idea", explore approaches | `/genie-goose:rub` | Ideation entry point |
+| Design architecture, structure, components | `/genie-goose:architecture` | Enriched by design.md if available |
+| Document design intent, check convention conflicts | `/genie-goose:intent` | Enriched by design.md + architecture.md |
+| Write implementation plan, break into tasks | `/genie-goose:write-plan` | Enriched by architecture.md + intent.md |
+| Set up evaluation criteria, review standards | `/genie-goose:criteria` | Requires conventions.yaml. Enriched by intent.md |
+| Execute the plan, start implementing | `/genie-goose:implement` | Enriched by plan.md + intent.md |
+| Code review, review changes | `/genie-goose:honk` | Enriched by criteria.md + intent.md. Requires git diff |
+| Create PR, generate PR body, prepare for merge | `/genie-goose:pr` | Enriched by all artifacts. Requires git diff |
+| Finish up, done, merge after review, wrap up, clean up | `/genie-goose:finish` | Works with or without review-report.md |
+| Update conventions, manage decisions, update ADR | `/genie-goose:update-docs` | Standalone — no prerequisites |
 | Verify completion, prove it works | `/genie-goose:polish` | Any time |
 | Fix a bug, debug, investigate error, something broken/failing | `/genie-goose:debug` | Standalone — no prerequisites |
 | Quick one-line edit, ad-hoc non-bug task | No skill needed | Apply polish before claiming done |
+
+## Route Recommendation
+
+When the user describes a task (without naming a specific skill), recommend a route based on task classification:
+
+| Classification | Recommended Route |
+|---------------|-------------------|
+| **Full feature** | `rub → architecture → write-plan → implement → honk → finish` |
+| **Medium task** | `rub → write-plan → implement → honk → finish` |
+| **Small task** | `implement → finish` (or no skill, just polish) |
+| **Debug** | `debug` |
+| **Documentation** | `update-docs` |
+
+**How to recommend:**
+
+1. **Classify** the task using the Task Classification table.
+2. **Check existing artifacts** in `.goose-artifacts/{branch}/` to see what context already exists.
+3. **Recommend a route** tailored to the classification and existing artifacts.
+4. **Present the route** to the user:
+
+   > Based on your request, I'd recommend this route:
+   > **rub → write-plan → implement → honk → finish**
+   > This covers design, planning, implementation, and review. Want to adjust?
+   >
+   > You can also run the full 9-step pipeline with `/genie-goose:goose`, or start with just `/genie-goose:implement` if you already know what to build.
+
+5. **The user decides.** They can accept, add/remove steps, choose the full pipeline, or start a specific skill directly.
+
+Routes are recommendations, not mandates.
 
 ## Routing Flowchart
 
@@ -93,9 +136,9 @@ digraph routing {
     full_pipeline [label="Full feature workflow?" shape=diamond];
     goose [label="Invoke /genie-goose:goose" shape=box style=filled fillcolor=lightgreen];
     specific_step [label="Matches a specific\npipeline step?" shape=diamond];
-    check_prereqs [label="Prerequisites\npresent?" shape=diamond];
+    check_prereqs [label="Enriching artifacts\navailable?" shape=diamond];
     invoke_skill [label="Invoke the matched skill" shape=box style=filled fillcolor=lightgreen];
-    report_missing [label="Tell user which\nprior step to run" shape=box style=filled fillcolor=lightyellow];
+    warn_missing [label="Warn about missing context\nask user: proceed or\nrun prior step?" shape=box style=filled fillcolor=lightyellow];
     is_completing [label="About to claim\nwork is done?" shape=diamond];
     polish [label="Apply /genie-goose:polish" shape=box style=filled fillcolor=lightblue];
     normal [label="Respond normally" shape=doublecircle];
@@ -118,7 +161,8 @@ digraph routing {
     specific_step -> check_prereqs [label="yes"];
     specific_step -> is_debugging [label="no"];
     check_prereqs -> invoke_skill [label="yes"];
-    check_prereqs -> report_missing [label="no"];
+    check_prereqs -> warn_missing [label="no"];
+    warn_missing -> invoke_skill [label="user confirms"];
     is_debugging -> debug [label="yes"];
     is_debugging -> is_wrapping_up [label="no"];
     is_wrapping_up -> finish [label="yes"];
@@ -128,43 +172,42 @@ digraph routing {
 }
 ```
 
-### Brainstorm Gate
+### Brainstorm Suggestion
 
-If the user's request involves creating, building, or modifying a feature — and `design.md` does not exist in `.goose-artifacts/{branch}/` — suggest running `/genie-goose:rub` (or `/genie-goose:goose` for the full pipeline) before proceeding to implementation skills.
+If the user's request involves creating, building, or modifying a feature — and `design.md` does not exist in `.goose-artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
 
-This gate does NOT block: the user can choose to skip. But always suggest brainstorming first for creative work.
+## Prerequisite Context Table
 
-## Prerequisite Table
+Skills are enriched by prior artifacts but most do not hard-require them. Before invoking a skill, check what context is available:
 
-Before invoking a skill, check that its prerequisite artifacts exist in `.goose-artifacts/{branch}/`:
+| Skill | Enriching Artifacts | Hard Requirement |
+|-------|---------------------|------------------|
+| `rub` | — | — |
+| `architecture` | `design.md` | — |
+| `intent` | `design.md`, `architecture.md` | — |
+| `write-plan` | `architecture.md`, `intent.md` | — |
+| `criteria` | `intent.md` | `conventions.yaml` |
+| `implement` | `plan.md`, `intent.md` | — |
+| `honk` | `criteria.md`, `intent.md` | git diff |
+| `pr` | all artifacts | git diff |
+| `finish` | `review-report.md` | — |
+| `update-docs` | — | `.goose/conventions.yaml` or `.goose/decisions.yaml` (at least one) |
+| `polish` | — | — |
+| `debug` | — | — |
 
-| Skill | Required Artifacts |
-|-------|--------------------|
-| `rub` | — (none) |
-| `architecture` | `design.md` |
-| `intent` | `design.md`, `architecture.md` |
-| `write-plan` | `architecture.md`, `intent.md` |
-| `criteria` | `intent.md` + `.goose/conventions.yaml` |
-| `implement` | `plan.md`, `intent.md` |
-| `honk` | `criteria.md`, `intent.md` + git diff |
-| `pr` | `review-report.md`, `intent.md` + git diff |
-| `update-docs` | `.goose/conventions.yaml` or `.goose/decisions.yaml` (at least one must exist) |
-| `polish` | — (none) |
-| `finish` | `review-report.md` |
-| `debug` | — (none) |
+If enriching artifacts are missing, the skill will warn about reduced context and ask the user to confirm before proceeding.
+If a **hard requirement** is missing, the skill cannot proceed.
 
-If a prerequisite is missing, inform the user which prior step to run. Example:
-> `architecture.md` not found. Run `/genie-goose:architecture` first (or `/genie-goose:goose` for the full pipeline).
+## Context-Aware Routing
 
-## Pipeline Resumption
+Check `.goose-artifacts/{branch}/` for existing artifacts to provide informed route recommendations:
 
-Users who already have some artifacts should be able to jump in at any step. Determine the pipeline position by checking which artifacts exist:
+1. Check which artifacts already exist.
+2. Based on what exists, recommend the next logical step(s).
+3. If the user has a partial set of artifacts, they can jump in at any point.
 
-1. Check `.goose-artifacts/{branch}/` for existing artifacts
-2. Identify the latest completed step based on artifacts present
-3. Suggest the next logical step
-
-Example: If design.md and architecture.md exist but intent.md does not, suggest `/genie-goose:intent` as the next step.
+Example: If design.md and architecture.md exist but intent.md does not:
+> You have design and architecture artifacts. The next step would be `/genie-goose:intent`, or you can skip to `/genie-goose:write-plan` if you want to start planning directly.
 
 ## Non-Pipeline Requests
 
@@ -186,7 +229,7 @@ These thoughts mean you are rationalizing skipping the router:
 
 | Thought | Reality |
 |---------|---------|
-| "This is just a quick fix, no skill needed" | Check the routing table first |
+| "This is just a quick fix, no skill needed" | Check the routing table. If it's truly a small task, the router may confirm no skill is needed |
 | "I already know what to do" | Skills provide structure, not just knowledge |
 | "The user didn't mention a specific step" | Infer the step from their intent |
 | "I'll just edit the code directly" | Check if implement should be driving this |
@@ -195,5 +238,5 @@ These thoughts mean you are rationalizing skipping the router:
 | "I should understand the problem before choosing a skill" | Skills structure your understanding. `debug` guides investigation; `rub` guides ideation. Route first, explore inside the skill |
 | "Let me read the code, then decide on a skill" | The routing table takes seconds to check. Check it before you open a single file |
 | "The user is asking a question, not requesting work" | Questions about conventions → `update-docs`. Questions about failures → `debug`. Check the table |
-| "A full skill is overkill for something this small" | Skills scale to the task. A trivial task finishes in minutes inside a skill — with structure intact |
+| "A full skill is overkill for something this small" | The router classifies task size. Small tasks may genuinely need no skill — but check the table to confirm |
 | "The user didn't say `/genie-goose:anything`" | Most users describe intent, not skill names. That's what the routing table is for — matching intent to skill |
