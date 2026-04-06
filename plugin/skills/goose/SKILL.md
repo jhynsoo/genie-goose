@@ -1,15 +1,16 @@
 ---
 name: goose
 description: >
-  Run the development workflow pipeline.
-  Executes rub, architecture, intent, write-plan,
-  criteria, implement, honk, pr, finish in sequence.
+  Run the full 9-step development workflow pipeline —
+  the recommended preset for medium-to-large features.
+  For lighter workflows, invoke skills individually
+  or use lamp's route recommendations.
 disable-model-invocation: true
 ---
 
 # Goose Pipeline
 
-Run the full development workflow pipeline.
+The full 9-step development workflow — recommended for medium-to-large features where thorough design, review, and verification matter. This is one way to use genie-goose, not the only way. For smaller tasks, the lamp router can suggest lighter routes.
 
 ## Precondition Checks
 
@@ -91,12 +92,23 @@ If the user skips the finish step, fall back to reporting:
 - Artifacts created in `.goose-artifacts/{branch}/`
 - Any remaining action items (REJECT verdicts to reconsider)
 
-## Pipeline Integrity — Rationalizations You Must Reject
+## When to Use the Full Pipeline
 
-| Excuse | Reality | Required Action |
-|--------|---------|-----------------|
-| "Brainstorming isn't needed for this small feature" | Small features benefit most from clear scope | Run rub step — if truly trivial, brainstorming will be fast |
-| "The user seems busy, I'll just proceed" | Every step requires user approval before advancing | Confirm with the user — never auto-advance between pipeline steps |
-| "I can do architecture and planning together" | Each step has distinct outputs and approval gates | Execute each step separately with its own artifact and approval |
-| "We already know the answer, skip to implement" | Skipping design steps creates undocumented decisions | Run every step — if the answer is obvious, the step will be quick |
-| "The user said 'just do it'" | 'Just do it' means run the pipeline efficiently, not skip steps | Acknowledge urgency, run steps briskly, but do not skip any |
+The full 9-step pipeline is recommended when:
+- Building a new feature with multiple components
+- Making architectural changes that affect multiple files
+- Working in an unfamiliar codebase where design clarity matters
+- The task involves API contracts, database changes, or public interfaces
+
+For smaller tasks (single-file changes, straightforward bug fixes, simple refactors), individual skills or lamp-recommended routes are more appropriate.
+
+## Pipeline Discipline
+
+When running the full pipeline, maintain step discipline:
+
+| Principle | Explanation |
+|-----------|-------------|
+| Each step has distinct outputs and approval gates | Do not merge architecture and planning into one step |
+| Confirm with the user before advancing between steps | Never auto-advance — the user approves each artifact |
+| If a step is genuinely trivial for the task, it will complete quickly | Fast completion is better than skipping |
+| "Just do it" means run efficiently, not skip steps | Acknowledge urgency, run briskly, but complete all steps |
