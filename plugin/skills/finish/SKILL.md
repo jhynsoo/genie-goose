@@ -12,8 +12,14 @@ Pipeline completion — verify, present options, execute, clean up.
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/review-report.md` must exist. If not, inform the user to run `/genie-goose:honk` first.
+**Full flow** (review-report.md exists):
+- `.goose-artifacts/{branch}/review-report.md` — provides review verdicts.
 - All ACCEPT items in review-report.md should have "Fixed" status.
+
+**Lightweight flow** (no review-report.md):
+- Warn: "No review-report.md found. Finish will verify tests and build but cannot check review verdicts."
+- Ask the user to confirm before proceeding.
+- The polish gate (tests + build) still applies regardless.
 
 ## Procedure
 
@@ -21,7 +27,7 @@ Pipeline completion — verify, present options, execute, clean up.
 
 1. Run full test suite + build via `/genie-goose:polish` gate (IDENTIFY → RUN → READ → VERIFY → CLAIM).
 2. Check for uncommitted changes (`git status`). All changes must be committed.
-3. Cross-reference review-report.md: verify all ACCEPT items have "Fixed" status.
+3. If review-report.md exists: cross-reference and verify all ACCEPT items have "Fixed" status. If review-report.md does not exist (lightweight flow): skip this check.
 4. If any check fails, report the issue and **stop** — do not present options until verification passes.
 
 <!-- HARD-GATE: Do not present options until all verification checks pass with fresh evidence -->
@@ -76,7 +82,7 @@ Regardless of the option chosen, summarize:
 
 | Excuse | Reality | Required Action |
 |--------|---------|-----------------|
-| "Tests already passed in implement" | Code changed during honk review fixes | Run the full suite again with fresh evidence |
+| "Tests already passed in implement" | If honk ran, code changed during review fixes. Even without honk, state may have changed since last test | Run the full suite again with fresh evidence |
 | "PR doesn't need a body" | pr-body.md exists or can be generated — PRs deserve context | Generate pr-body.md via `/genie-goose:pr` if it doesn't exist |
 | "I can skip verification, honk already reviewed" | honk reviewed the diff, not the integrated result after fixes | Run full verification — build, tests, lint — on the final state |
 | "The user said merge, no need to verify first" | Merging broken code is worse than a delay | Always run Step 1 verification before presenting options |
@@ -87,5 +93,5 @@ Regardless of the option chosen, summarize:
 - Invokes `/genie-goose:polish` for Step 1 verification.
 - Invokes `/genie-goose:pr` if PR is chosen and pr-body.md is missing.
 - Reads: `review-report.md`, `pr-body.md` (optional).
-- Prerequisite: `review-report.md` must exist (honk must be completed).
+- Enriched by: `review-report.md` (from honk). Works without it in lightweight flows.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
