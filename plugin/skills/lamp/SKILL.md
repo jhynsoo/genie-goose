@@ -2,13 +2,18 @@
 name: lamp
 description: >
   Dynamic skill router — determines which genie-goose skill to invoke
-  based on user intent. Auto-injected at session start via SessionStart hook.
+  based on user intent. It can be auto-injected via a session-start hook
+  or invoked explicitly when needed.
 disable-model-invocation: true
 ---
 
 # Lamp
 
-Dynamic skill router for genie-goose. This skill is auto-injected at session start.
+Dynamic skill router for genie-goose.
+
+In clients wired with a SessionStart hook, this skill can be injected automatically.
+In Codex, plugin-bundled hooks are not loaded automatically, so invoke this skill
+explicitly or let Codex match it implicitly from the skill description.
 
 <SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, skip this skill entirely.
@@ -43,14 +48,17 @@ Genie-goose's brainstorming skill provides structured design exploration that is
 
 ## How to Access Skills
 
-Use the `Skill` tool to invoke skills by name:
+Use the host client's skill invocation mechanism:
 
 ```
-Skill("genie-goose:rub")
-Skill("genie-goose:architecture")
-Skill("genie-goose:implement")
-...
+Claude Code: /genie-goose:rub
+Codex plugin: @genie-goose
+Codex direct skill: $rub
 ```
+
+When referring to skills in user-facing replies, prefer neutral wording like
+`the rub skill` or `the write-plan skill` unless the user explicitly asks for
+client-specific syntax.
 
 When you invoke a skill, its content is loaded and presented to you — follow it directly.
 

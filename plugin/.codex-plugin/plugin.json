@@ -1,0 +1,40 @@
+{
+  "name": "genie-goose",
+  "version": "0.2.0",
+  "description": "Composable development workflow framework with PR generation and convention/ADR management",
+  "author": {
+    "name": "jhynsoo",
+    "url": "https://github.com/jhynsoo"
+  },
+  "homepage": "https://github.com/jhynsoo/genie-goose",
+  "repository": "https://github.com/jhynsoo/genie-goose",
+  "license": "MIT",
+  "keywords": [
+    "coding",
+    "workflow",
+    "planning",
+    "review",
+    "codex",
+    "claude"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Genie Goose",
+    "shortDescription": "Composable coding workflow skills",
+    "longDescription": "Bundle genie-goose workflow skills for brainstorming, planning, implementation, review, PR preparation, and finish gates in Codex.",
+    "developerName": "jhynsoo",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/jhynsoo/genie-goose",
+    "defaultPrompt": [
+      "Route this coding task through genie-goose.",
+      "Use genie-goose to plan, implement, and review this change.",
+      "Run the goose workflow for this feature."
+    ],
+    "brandColor": "#2F855A",
+    "screenshots": []
+  }
+}
