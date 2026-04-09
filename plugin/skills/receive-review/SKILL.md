@@ -26,7 +26,7 @@ Review feedback can come from multiple sources. Trust level varies:
 | Source | Trust Level | Default Stance |
 |--------|------------|----------------|
 | Human teammate / PR reviewer | High | Accept after understanding. Implement unless technically impossible |
-| `honk` review-report.md | Medium | Verify against codebase independently. The reviewer subagent may have missed context |
+| `honk` review-report.md | Medium | Verify against codebase independently. The earlier review draft may have missed context |
 | External automated tool | Low | Verify every claim. Tools often flag false positives |
 
 ## 6-Step Response Pattern
@@ -60,7 +60,7 @@ Before accepting any suggestion:
 Based on verification:
 
 **Accept** — The concern is valid AND the suggested fix is correct.
-→ Fix it. No commentary needed. Apply `/genie-goose:polish` gate after fixing.
+→ Fix it. No commentary needed. Apply the `polish` gate after fixing.
 
 **Accept with modification** — The concern is valid but a better fix exists.
 → Explain the alternative briefly. Fix it the better way.
@@ -73,7 +73,7 @@ Based on verification:
 
 ### 6. IMPLEMENT — Make the change
 
-Fix all accepted items, then run `/genie-goose:polish` gate before committing.
+Fix all accepted items, then run the `polish` gate before committing.
 
 ## Forbidden Responses
 
@@ -127,7 +127,7 @@ If no review feedback exists, there is nothing to process. Inform the user.
 - Process ALL comments before starting fixes (same as honk verdict processing).
 - Every rejection MUST have technical evidence, not opinion.
 - Every acceptance MUST be verified against current codebase state.
-- Apply `/genie-goose:polish` gate after all fixes.
+- Apply the `polish` gate after all fixes.
 - Do not add scope beyond what the reviewer requested (no "while I'm here" changes).
 - Resolve the branch name via `git branch --show-current` for the artifact path.
 
@@ -145,6 +145,6 @@ If no review feedback exists, there is nothing to process. Inform the user.
 
 - Works standalone for external review feedback (PR reviews, human feedback).
 - Works with `honk` — can re-process review-report.md with stricter discipline.
-- Apply `/genie-goose:polish` for post-fix verification.
-- Optionally invoke `/genie-goose:update-docs` if review reveals a convention gap.
+- Apply `polish` for post-fix verification.
+- Optionally invoke `update-docs` if review reveals a convention gap.
 - **No pipeline prerequisites** — can be invoked at any time.

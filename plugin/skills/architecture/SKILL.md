@@ -16,7 +16,7 @@ Design the technical architecture based on the brainstorm design document.
 
 If design.md is missing:
 1. **Warn:** "design.md not found. Architecture decisions will lack grounding in agreed requirements."
-2. **Ask:** proceed anyway, or run `/genie-goose:rub` first?
+2. **Ask:** proceed anyway, or run the `rub` skill first?
 3. If the user confirms, proceed using their description and conversation context.
 
 ## Procedure

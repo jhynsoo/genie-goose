@@ -85,7 +85,8 @@ If design.md or architecture.md is missing:
 
 ## Rules
 
-- This skill runs in a forked context. Only create artifact files — do NOT modify source code. (`.goose/` configuration files may be updated after user approval.)
+- Complete this skill in the current thread by default. A delegated helper is optional only when the host supports it and the user explicitly asks for it.
+- Only create artifact files — do NOT modify source code. (`.goose/` configuration files may be updated after user approval.)
 - `.goose/` document updates (conventions.yaml, decisions.yaml) are allowed after user approval.
 - Always surface discussion points. Do not silently resolve ambiguity.
 - decisions.yaml `context` field must be concrete enough to understand "why" from context alone.

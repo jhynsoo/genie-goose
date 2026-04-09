@@ -25,7 +25,7 @@ Pipeline completion — verify, present options, execute, clean up.
 
 ### Step 1: VERIFY — Final Health Check
 
-1. Run full test suite + build via `/genie-goose:polish` gate (IDENTIFY → RUN → READ → VERIFY → CLAIM).
+1. Run full test suite + build via the `polish` gate (IDENTIFY → RUN → READ → VERIFY → CLAIM).
 2. Check for uncommitted changes (`git status`). All changes must be committed.
 3. If review-report.md exists: cross-reference and verify all ACCEPT items have "Fixed" status. If review-report.md does not exist (lightweight flow): skip this check.
 4. If any check fails, report the issue and **stop** — do not present options until verification passes.
@@ -56,7 +56,7 @@ Pipeline complete. All verifications passed. Choose how to proceed:
 
 **Option 2 — Create PR:**
 1. Check if `.goose-artifacts/{branch}/pr-body.md` exists.
-   - If not: invoke `/genie-goose:pr` to generate it.
+   - If not: invoke the `pr` skill to generate it.
 2. Push branch to remote: `git push -u origin {branch}`
 3. Create PR using `gh pr create` with the pr-body.md content.
 4. Report: PR URL.
@@ -84,15 +84,15 @@ Regardless of the option chosen, summarize:
 | Excuse | Reality | Required Action |
 |--------|---------|-----------------|
 | "Tests already passed in implement" | If honk ran, code changed during review fixes. Even without honk, state may have changed since last test | Run the full suite again with fresh evidence |
-| "PR doesn't need a body" | pr-body.md exists or can be generated — PRs deserve context | Generate pr-body.md via `/genie-goose:pr` if it doesn't exist |
+| "PR doesn't need a body" | pr-body.md exists or can be generated — PRs deserve context | Generate pr-body.md via the `pr` skill if it doesn't exist |
 | "I can skip verification, honk already reviewed" | honk reviewed the diff, not the integrated result after fixes | Run full verification — build, tests, lint — on the final state |
 | "The user said merge, no need to verify first" | Merging broken code is worse than a delay | Always run Step 1 verification before presenting options |
 | "Discard doesn't need double confirmation" | Deleting work is irreversible | Always require two explicit confirmations |
 
 ## Integration
 
-- Invokes `/genie-goose:polish` for Step 1 verification.
-- Invokes `/genie-goose:pr` if PR is chosen and pr-body.md is missing.
+- Invokes `polish` for Step 1 verification.
+- Invokes `pr` if PR is chosen and pr-body.md is missing.
 - Reads: `review-report.md`, `pr-body.md` (optional).
 - Enriched by: `review-report.md` (from honk). Works without it in lightweight flows.
 - Resolve the branch name via `git branch --show-current` for the artifact path.

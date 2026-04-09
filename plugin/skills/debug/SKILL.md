@@ -58,7 +58,7 @@ If you cannot explain WHY the bug occurs, you have not found the root cause.
 1. **Write a failing test** that captures the bug. The test MUST fail before the fix is applied.
 2. **Apply the minimal fix** — change only what is necessary to address the proven root cause.
 3. **Run the test** — verify it now passes.
-4. **Run full verification** via `/genie-goose:polish` gate (IDENTIFY → RUN → READ → VERIFY → CLAIM).
+4. **Run full verification** via the `polish` gate (IDENTIFY → RUN → READ → VERIFY → CLAIM).
 5. **Check for related bugs** — search for the same pattern elsewhere in the codebase.
 6. **Commit** with a message that references the root cause.
 
@@ -129,7 +129,7 @@ When multiple independent failures exist, use parallel agents to investigate sim
 
 ## Integration
 
-- Apply `/genie-goose:polish` for Phase 4 verification.
-- Optionally invoke `/genie-goose:update-docs` to record bug patterns in `decisions.yaml`.
+- Apply `polish` for Phase 4 verification.
+- Optionally invoke `update-docs` to record bug patterns in `decisions.yaml`.
 - **No pipeline prerequisites** — can be invoked standalone at any time.
 - Resolve the branch name via `git branch --show-current` for the artifact path.

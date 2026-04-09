@@ -39,7 +39,7 @@ If the project's CLAUDE.md says "don't use TDD" and a skill says "always TDD," f
 
 ### Plan Mode → Rub Redirect
 
-When the user enters plan mode (via `/plan` or the system's EnterPlanMode), **redirect to `/genie-goose:rub`** instead of using the default plan mode.
+When the user enters plan mode (via `/plan` or the system's EnterPlanMode), **redirect to the `rub` skill** instead of using the default plan mode.
 
 Genie-goose's brainstorming skill provides structured design exploration that is superior to the default plan mode for feature work.
 
@@ -98,20 +98,20 @@ This classification drives the route recommendation below.
 
 | User Intent | Skill | Notes |
 |-------------|-------|-------|
-| Build a new feature end-to-end, full workflow | `/genie-goose:goose` | Full 9-step pipeline preset |
-| "Let's brainstorm", "I have an idea", explore approaches | `/genie-goose:rub` | Ideation entry point |
-| Design architecture, structure, components | `/genie-goose:architecture` | Enriched by design.md if available |
-| Document design intent, check convention conflicts | `/genie-goose:intent` | Enriched by design.md + architecture.md |
-| Write implementation plan, break into tasks | `/genie-goose:write-plan` | Enriched by architecture.md + intent.md |
-| Set up evaluation criteria, review standards | `/genie-goose:criteria` | Requires conventions.yaml. Enriched by intent.md |
-| Execute the plan, start implementing | `/genie-goose:implement` | Enriched by plan.md + intent.md |
-| Code review, review changes | `/genie-goose:honk` | Enriched by criteria.md + intent.md. Requires git diff |
-| Process review feedback, respond to PR comments, handle review | `/genie-goose:receive-review` | Works with honk review-report.md or external reviews |
-| Create PR, generate PR body, prepare for merge | `/genie-goose:pr` | Enriched by all artifacts. Requires git diff |
-| Finish up, done, merge after review, wrap up, clean up | `/genie-goose:finish` | Works with or without review-report.md |
-| Update conventions, manage decisions, update ADR | `/genie-goose:update-docs` | Standalone — no prerequisites |
-| Verify completion, prove it works | `/genie-goose:polish` | Any time |
-| Fix a bug, debug, investigate error, something broken/failing | `/genie-goose:debug` | Standalone — no prerequisites |
+| Build a new feature end-to-end, full workflow | `goose` | Full 9-step pipeline preset |
+| "Let's brainstorm", "I have an idea", explore approaches | `rub` | Ideation entry point |
+| Design architecture, structure, components | `architecture` | Enriched by design.md if available |
+| Document design intent, check convention conflicts | `intent` | Enriched by design.md + architecture.md |
+| Write implementation plan, break into tasks | `write-plan` | Enriched by architecture.md + intent.md |
+| Set up evaluation criteria, review standards | `criteria` | Requires conventions.yaml. Enriched by intent.md |
+| Execute the plan, start implementing | `implement` | Enriched by plan.md + intent.md |
+| Code review, review changes | `honk` | Enriched by criteria.md + intent.md. Requires git diff |
+| Process review feedback, respond to PR comments, handle review | `receive-review` | Works with honk review-report.md or external reviews |
+| Create PR, generate PR body, prepare for merge | `pr` | Enriched by all artifacts. Requires git diff |
+| Finish up, done, merge after review, wrap up, clean up | `finish` | Works with or without review-report.md |
+| Update conventions, manage decisions, update ADR | `update-docs` | Standalone — no prerequisites |
+| Verify completion, prove it works | `polish` | Any time |
+| Fix a bug, debug, investigate error, something broken/failing | `debug` | Standalone — no prerequisites |
 | Quick one-line edit, ad-hoc non-bug task | No skill needed | Apply polish before claiming done |
 
 ## Route Recommendation
@@ -120,7 +120,7 @@ When the user describes a task (without naming a specific skill), recommend a ro
 
 | Classification | Recommended Route |
 |---------------|-------------------|
-| **Full feature** | `/genie-goose:goose` (full 9-step pipeline), or `rub → architecture → intent → write-plan → criteria → implement → honk → finish` |
+| **Full feature** | `goose` (full 9-step pipeline), or `rub → architecture → intent → write-plan → criteria → implement → honk → finish` |
 | **Medium task** | `rub → write-plan → implement → honk → finish` |
 | **Small task** | `implement → finish` (or no skill, just polish) |
 | **Debug** | `debug` |
@@ -137,13 +137,13 @@ When the user describes a task (without naming a specific skill), recommend a ro
    > **rub → write-plan → implement → honk → finish**
    > This covers design, planning, implementation, and review. Want to adjust?
    >
-   > You can also run the full 9-step pipeline with `/genie-goose:goose`, or start with just `/genie-goose:implement` if you already know what to build.
+   > You can also run the full 9-step pipeline with `goose`, or start with just `implement` if you already know what to build.
 
 5. **The user decides.** They can accept, add/remove steps, choose the full pipeline, or start a specific skill directly.
 
 Routes are recommendations, not mandates.
 
-> **Note:** For full feature and medium task routes, `/genie-goose:receive-review` can optionally follow `honk` for stricter review processing (pushback protocol, anti-sycophancy enforcement).
+> **Note:** For full feature and medium task routes, `receive-review` can optionally follow `honk` for stricter review processing (pushback protocol, anti-sycophancy enforcement).
 
 ## Routing Flowchart
 
@@ -156,29 +156,29 @@ digraph routing {
     is_subagent [label="Am I a subagent?" shape=diamond];
     skip [label="Skip this skill\nproceed normally" shape=box];
     full_pipeline [label="Full feature workflow?" shape=diamond];
-    goose [label="Invoke /genie-goose:goose" shape=box style=filled fillcolor=lightgreen];
+    goose [label="Invoke goose" shape=box style=filled fillcolor=lightgreen];
     specific_step [label="Matches a specific\npipeline step?" shape=diamond];
     check_prereqs [label="Enriching artifacts\navailable?" shape=diamond];
     invoke_skill [label="Invoke the matched skill" shape=box style=filled fillcolor=lightgreen];
     warn_missing [label="Warn about missing context\nask user: proceed or\nrun prior step?" shape=box style=filled fillcolor=lightyellow];
     is_completing [label="About to claim\nwork is done?" shape=diamond];
-    polish [label="Apply /genie-goose:polish" shape=box style=filled fillcolor=lightblue];
+    polish [label="Apply polish" shape=box style=filled fillcolor=lightblue];
     normal [label="Respond normally" shape=doublecircle];
 
     start -> is_subagent;
     is_subagent -> skip [label="yes"];
     is_subagent -> full_pipeline [label="no"];
     needs_brainstorm [label="Creative/feature work\nwithout design.md?" shape=diamond];
-    suggest_rub [label="Suggest /genie-goose:rub\nor /genie-goose:goose first" shape=box style=filled fillcolor=lightyellow];
+    suggest_rub [label="Suggest rub\nor goose first" shape=box style=filled fillcolor=lightyellow];
 
     full_pipeline -> goose [label="yes"];
     full_pipeline -> needs_brainstorm [label="no"];
     needs_brainstorm -> suggest_rub [label="yes"];
     needs_brainstorm -> specific_step [label="no"];
     is_debugging [label="Debugging or\nfixing a bug?" shape=diamond];
-    debug [label="Invoke /genie-goose:debug" shape=box style=filled fillcolor=lightsalmon];
+    debug [label="Invoke debug" shape=box style=filled fillcolor=lightsalmon];
     is_wrapping_up [label="Wrapping up after\ncode review?" shape=diamond];
-    finish [label="Invoke /genie-goose:finish" shape=box style=filled fillcolor=lightgreen];
+    finish [label="Invoke finish" shape=box style=filled fillcolor=lightgreen];
 
     specific_step -> check_prereqs [label="yes"];
     specific_step -> is_debugging [label="no"];
@@ -230,7 +230,7 @@ Check `.goose-artifacts/{branch}/` for existing artifacts to provide informed ro
 3. If the user has a partial set of artifacts, they can jump in at any point.
 
 Example: If design.md and architecture.md exist but intent.md does not:
-> You have design and architecture artifacts. The next step would be `/genie-goose:intent`, or you can skip to `/genie-goose:write-plan` if you want to start planning directly.
+> You have design and architecture artifacts. The next step would be `intent`, or you can skip to `write-plan` if you want to start planning directly.
 
 ## Non-Pipeline Requests
 
@@ -242,9 +242,9 @@ Not every request needs a genie-goose skill. These can proceed normally:
 - Exploratory tasks
 - Configuration changes
 
-**Note:** `/genie-goose:update-docs` is a standalone skill, not a pipeline step. Route to it when the user wants to manage conventions or decisions directly, regardless of pipeline state.
+**Note:** `update-docs` is a standalone skill, not a pipeline step. Route to it when the user wants to manage conventions or decisions directly, regardless of pipeline state.
 
-**However:** Even for non-pipeline work, apply `/genie-goose:polish` before claiming the work is done. Evidence before claims, always.
+**However:** Even for non-pipeline work, apply `polish` before claiming the work is done. Evidence before claims, always.
 
 ## Red Flags — STOP
 
@@ -262,4 +262,4 @@ These thoughts mean you are rationalizing skipping the router:
 | "Let me read the code, then decide on a skill" | The routing table takes seconds to check. Check it before you open a single file |
 | "The user is asking a question, not requesting work" | Questions about conventions → `update-docs`. Questions about failures → `debug`. Check the table |
 | "A full skill is overkill for something this small" | The router classifies task size. Small tasks may genuinely need no skill — but check the table to confirm |
-| "The user didn't say `/genie-goose:anything`" | Most users describe intent, not skill names. That's what the routing table is for — matching intent to skill |
+| "The user didn't name a genie-goose skill" | Most users describe intent, not skill names. That's what the routing table is for — matching intent to skill |

@@ -26,14 +26,28 @@ claude plugin install genie-goose@genie-goose --scope project
 
 ### Codex
 
-Codex plugins are installed from marketplaces. This repository now includes a repo-local marketplace file at `.agents/plugins/marketplace.json` that points to `./plugin`, so you can test genie-goose in Codex without copying files elsewhere.
+Codex plugins are installed from marketplaces. This repository includes a repo-local marketplace file at `.agents/plugins/marketplace.json` that points to `./plugin`, so you can test genie-goose in Codex without copying files elsewhere.
 
 1. Restart Codex after pulling this repo so it reloads repo-local marketplaces.
 2. Start Codex and open the plugin directory with `/plugins`.
 3. Choose the `Genie Goose Local` marketplace.
 4. Install `genie-goose`.
-5. Start a new thread and invoke the plugin with `@genie-goose`.
+5. Start a new thread and invoke the plugin entrypoint with `@genie-goose`.
 6. If you want to bypass the router and call a bundled skill directly, use `$goose`, `$lamp`, `$implement`, and so on.
+7. Treat `@genie-goose` as the plugin/router entrypoint. Use `$goose` when you specifically want the full 9-step pipeline skill.
+
+### Optional Codex Advanced Setup
+
+The baseline Codex flow is single-agent and works without extra setup.
+
+If you also want reusable custom agents for review-oriented delegation, copy the provided templates into your Codex agent directory (`.codex/agents/` for project scope or `~/.codex/agents/` for personal scope):
+
+```bash
+mkdir -p .codex/agents
+cp ./plugin/assets/codex-agents/*.toml .codex/agents/
+```
+
+Those templates are opt-in. Codex only spawns subagents when you explicitly ask it to, so installing the files does not change the default `@genie-goose` behavior by itself.
 
 ## Setup
 
@@ -90,9 +104,10 @@ There are three ways to use genie-goose:
 
 Run the complete 9-step workflow with a single command:
 
-```
+```text
 Claude Code: /genie-goose:goose build a user authentication system
-Codex: @genie-goose build a user authentication system
+Codex router entrypoint: @genie-goose build a user authentication system
+Codex full pipeline skill: $goose build a user authentication system
 ```
 
 This executes all steps in sequence — **rub → architecture → intent → write-plan → criteria → implement → honk → pr (optional) → finish** — pausing for your input between steps. Recommended for medium-to-large features.
@@ -123,7 +138,8 @@ Run any skill independently:
 
 | Command | Description |
 |---------|-------------|
-| `Claude: /genie-goose:goose <topic>` `Codex: @genie-goose <topic>` | Full 9-step pipeline preset. In Codex, this is the recommended starting point. |
+| `Claude: /genie-goose:goose <topic>` `Codex: $goose <topic>` | Full 9-step pipeline preset. |
+| `Codex: @genie-goose <topic>` | Plugin/router entrypoint. Let genie-goose classify the request and choose the next skill. |
 | `Claude: /genie-goose:rub <topic>` `Codex: $rub <topic>` | Collaborative brainstorming — asks clarifying questions, proposes 2-3 approaches |
 | `Claude: /genie-goose:architecture` `Codex: $architecture` | Design technical architecture based on brainstorm result |
 | `Claude: /genie-goose:intent` `Codex: $intent` | Document design decisions + detect conflicts with conventions/decisions |
@@ -189,7 +205,7 @@ Two skills apply to all workflows — full pipeline, recommended routes, and dir
 
 ## How Review Works
 
-The review step (honk) uses a dedicated subagent that checks every change against the evaluation criteria. Each comment must cite a specific criterion — no opinion-based reviews.
+The review step (honk) checks every change against the evaluation criteria. Each comment must cite a specific criterion — no opinion-based reviews. In Codex, the baseline path keeps this in the current thread; optional custom-agent templates are provided only for explicit delegation workflows.
 
 **Priority levels:**
 
@@ -215,8 +231,8 @@ To test changes locally in Codex:
 1. Restart Codex so it reloads `.agents/plugins/marketplace.json`.
 2. Open `/plugins`.
 3. Install or reinstall `genie-goose` from `Genie Goose Local`.
-4. Start a new thread and use `@genie-goose`.
-5. Use a specific `$skill` only when you want to bypass the plugin router.
+4. Start a new thread and use `@genie-goose` as the plugin/router entrypoint.
+5. Use a specific `$skill` only when you want to bypass the router, for example `$goose` for the full pipeline.
 
 ## License
 

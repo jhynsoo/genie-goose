@@ -2,7 +2,7 @@
 name: criteria
 description: >
   Establish evaluation criteria based on conventions.yaml,
-  decisions.yaml, and design intent. Subagent extracts
+  decisions.yaml, and design intent. Extract
   relevant items to produce criteria.md.
 disable-model-invocation: true
 context: fork
@@ -16,12 +16,12 @@ Establish evaluation criteria for the upcoming code review by extracting relevan
 ## Prerequisites
 
 - `.goose-artifacts/{branch}/intent.md` — provides task-specific context for filtering relevant conventions.
-- `.goose/conventions.yaml` — **required**. The source of evaluation criteria. If not found, inform the user: "Run `/genie-goose:update-docs` to create it from the template, or manually copy this plugin's `.goose/conventions.template.yaml` to `.goose/conventions.yaml` and customize it."
+- `.goose/conventions.yaml` — **required**. The source of evaluation criteria. If not found, inform the user: "Run the `update-docs` skill to create it from the template, or manually copy this plugin's `.goose/conventions.template.yaml` to `.goose/conventions.yaml` and customize it."
 - `.goose/decisions.yaml` — optional. If it exists, relevant ADR items will be included in the criteria.
 
 If intent.md is missing:
 1. **Warn:** "Without intent.md, criteria extraction will lack task-specific context and may include irrelevant conventions."
-2. **Ask:** proceed anyway, or run `/genie-goose:intent` first?
+2. **Ask:** proceed anyway, or run the `intent` skill first?
 3. If the user confirms, use the user's task description and git diff to infer scope for convention filtering.
 
 ## Procedure
@@ -46,5 +46,6 @@ If intent.md is missing:
 ## Rules
 
 - Do NOT include the entire conventions.yaml or decisions.yaml. Extract only relevant items.
-- This skill runs in a forked context with a subagent. Only create artifact files — do NOT modify source code.
+- Complete this skill in the current thread by default. If the host supports delegation and the user explicitly asks for a helper agent, you may delegate extraction work, but the main agent still owns the final criteria draft and user-facing synthesis.
+- Only create artifact files — do NOT modify source code.
 - Resolve the branch name via `git branch --show-current` for the artifact path.

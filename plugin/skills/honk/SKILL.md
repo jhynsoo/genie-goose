@@ -2,7 +2,7 @@
 name: honk
 description: >
   Evidence-based code review using evaluation criteria.
-  Reviewer subagent produces review-report.md with per-comment
+  Produce review-report.md with per-comment
   ACCEPT/REJECT verdicts confirmed by the user.
 disable-model-invocation: true
 context: fork
@@ -37,11 +37,11 @@ If criteria.md or intent.md is missing:
 
 3. **Save** the review to `.goose-artifacts/{branch}/review-report.md`.
 
-4. **Return results** to the main agent for verdict processing.
+4. **If working in a delegated helper context, return results** to the main agent for verdict processing. Otherwise, continue with verdict processing in the current thread.
 
-## Verdict Processing (Main Agent)
+## Verdict Processing
 
-After the reviewer subagent returns review-report.md:
+After drafting review-report.md:
 
 1. **Present ALL comments at once** as a batch summary:
 
@@ -64,7 +64,7 @@ After the reviewer subagent returns review-report.md:
 
 <!-- HARD-GATE: Do not begin fixing until ALL verdicts are collected from the user -->
 
-3. **Fix all ACCEPT items**, then apply the `/genie-goose:polish` gate (RUN tests → READ output → VERIFY pass) before committing.
+3. **Fix all ACCEPT items**, then apply the `polish` gate (RUN tests → READ output → VERIFY pass) before committing.
 
 4. **Record REJECT reasons** provided by the user.
 
@@ -78,7 +78,7 @@ After the reviewer subagent returns review-report.md:
    ```
 
 <!-- HARD-GATE: Do not claim review cycle complete without fresh full-suite polish gate evidence -->
-6. **QA pass:** Apply the `/genie-goose:polish` gate for final verification — run full build + test suite, read output, verify 0 failures before claiming the review cycle is complete.
+6. **QA pass:** Apply the `polish` gate for final verification — run full build + test suite, read output, verify 0 failures before claiming the review cycle is complete.
 
 ## Priority Levels
 
@@ -102,5 +102,5 @@ After the reviewer subagent returns review-report.md:
 | "This criterion obviously applies, no citation needed" | Every comment must trace to criteria.md | Find and cite the specific criterion ID before writing the comment |
 | "This is clearly an ACCEPT, I can auto-fix" | Verdicts come from the user, not the agent | Present all comments → collect all verdicts → then fix |
 | "The user probably doesn't care about this p1" | p1 means must-fix — skipping requires explicit REJECT | Present the p1 with full detail; only skip on explicit user REJECT with justification |
-| "All individual fixes passed, no need for final QA" | Individual passes do not prove integrated correctness | Run full build + test suite as final QA via `/genie-goose:polish` |
+| "All individual fixes passed, no need for final QA" | Individual passes do not prove integrated correctness | Run full build + test suite as final QA via the `polish` skill |
 | "These are all minor, just ACCEPT all" | Batch-approving skips judgment on each item | Present each priority group separately; user must confirm each group |

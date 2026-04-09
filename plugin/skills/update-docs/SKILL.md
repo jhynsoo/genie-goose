@@ -13,9 +13,9 @@ Manage `.goose/conventions.yaml` and `.goose/decisions.yaml` with bidirectional 
 
 ## Usage
 
-- `/genie-goose:update-docs` — Analyze and update both documents
-- `/genie-goose:update-docs convention` — Focus on conventions.yaml
-- `/genie-goose:update-docs adr` — Focus on decisions.yaml
+- `update-docs` — Analyze and update both documents
+- `update-docs convention` — Focus on conventions.yaml
+- `update-docs adr` — Focus on decisions.yaml
 
 ## Procedure
 

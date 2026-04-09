@@ -32,8 +32,22 @@ Codex 플러그인은 marketplace를 통해 설치합니다. 이 저장소에는
 2. Codex를 실행하고 `/plugins`로 플러그인 디렉터리를 엽니다.
 3. `Genie Goose Local` marketplace를 선택합니다.
 4. `genie-goose`를 설치합니다.
-5. 새 스레드를 열고 `@genie-goose`로 플러그인을 호출합니다.
+5. 새 스레드를 열고 `@genie-goose`로 플러그인 엔트리포인트를 호출합니다.
 6. 라우터를 거치지 않고 특정 스킬만 바로 실행하고 싶다면 `$goose`, `$lamp`, `$implement`처럼 개별 스킬을 직접 호출합니다.
+7. `@genie-goose`는 플러그인/라우터 엔트리포인트로 보고, 전체 9단계 파이프라인을 바로 실행하고 싶을 때는 `$goose`를 사용합니다.
+
+### Codex 고급 설정 선택 사항
+
+기본 Codex 사용 경로는 단일 에이전트 기준으로 동작하며, 추가 설정 없이 사용할 수 있습니다.
+
+리뷰 보조용 커스텀 에이전트 템플릿도 함께 쓰고 싶다면 아래처럼 Codex 에이전트 디렉터리로 복사합니다. 프로젝트 범위는 `.codex/agents/`, 개인 범위는 `~/.codex/agents/`를 사용하면 됩니다.
+
+```bash
+mkdir -p .codex/agents
+cp ./plugin/assets/codex-agents/*.toml .codex/agents/
+```
+
+이 템플릿은 선택 사항입니다. Codex는 사용자가 명시적으로 요청할 때만 subagent를 띄우므로, 파일을 복사해도 기본 `@genie-goose` 동작이 자동으로 바뀌지는 않습니다.
 
 ## 설정
 
@@ -90,9 +104,10 @@ genie-goose를 사용하는 세 가지 방법이 있습니다:
 
 하나의 명령으로 전체 9단계 워크플로우를 실행합니다:
 
-```
+```text
 Claude Code: /genie-goose:goose 사용자 인증 시스템 구축
-Codex: @genie-goose 사용자 인증 시스템 구축
+Codex 라우터 엔트리포인트: @genie-goose 사용자 인증 시스템 구축
+Codex 전체 파이프라인 스킬: $goose 사용자 인증 시스템 구축
 ```
 
 **rub → architecture → intent → write-plan → criteria → implement → honk → pr (선택) → finish** 순서로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다. 중대형 기능 개발에 권장됩니다.
@@ -123,7 +138,8 @@ Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugin/ho
 
 | 명령 | 설명 |
 |------|------|
-| `Claude: /genie-goose:goose <주제>` `Codex: @genie-goose <주제>` | 전체 9단계 파이프라인 프리셋. Codex에서는 이 경로를 기본 권장합니다. |
+| `Claude: /genie-goose:goose <주제>` `Codex: $goose <주제>` | 전체 9단계 파이프라인 프리셋 |
+| `Codex: @genie-goose <주제>` | 플러그인/라우터 엔트리포인트. 요청을 분류한 뒤 다음 스킬을 고릅니다. |
 | `Claude: /genie-goose:rub <주제>` `Codex: $rub <주제>` | 브레인스토밍 — 질문을 통해 요구사항을 파악하고 2-3가지 접근 방식 제안 |
 | `Claude: /genie-goose:architecture` `Codex: $architecture` | 브레인스토밍 결과를 바탕으로 기술 아키텍처 설계 |
 | `Claude: /genie-goose:intent` `Codex: $intent` | 설계 의도 문서화 + 컨벤션/결정 충돌 감지 및 변경 제안 |
@@ -189,7 +205,7 @@ debug           ←── (독립 실행, 선행 조건 없음)
 
 ## 리뷰 방식
 
-리뷰 단계(honk)는 전용 subagent가 모든 변경 사항을 평가 기준에 대해 검사합니다. 모든 코멘트는 구체적인 기준을 인용해야 하며, 근거 없는 리뷰는 허용되지 않습니다.
+리뷰 단계(honk)는 모든 변경 사항을 평가 기준에 대해 검사합니다. 모든 코멘트는 구체적인 기준을 인용해야 하며, 근거 없는 리뷰는 허용되지 않습니다. Codex 기본 경로에서는 현재 스레드에서 처리하고, 커스텀 에이전트 템플릿은 명시적 위임이 필요할 때만 선택적으로 사용합니다.
 
 **우선순위:**
 
@@ -215,8 +231,8 @@ Codex에서 로컬 테스트:
 1. `.agents/plugins/marketplace.json`을 다시 읽도록 Codex를 재시작합니다.
 2. `/plugins`를 엽니다.
 3. `Genie Goose Local`에서 `genie-goose`를 설치하거나 재설치합니다.
-4. 새 스레드에서 `@genie-goose`를 사용합니다.
-5. 플러그인 라우터를 우회하고 싶을 때만 특정 `$skill`을 사용합니다.
+4. 새 스레드에서 `@genie-goose`를 플러그인/라우터 엔트리포인트로 사용합니다.
+5. 라우터를 우회하고 싶을 때만 특정 `$skill`을 사용합니다. 예: 전체 파이프라인은 `$goose`.
 
 ## 라이선스
 

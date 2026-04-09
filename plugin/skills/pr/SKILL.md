@@ -19,7 +19,7 @@ Generate a structured PR body from accumulated pipeline artifacts and the git di
 
 If intent.md is missing:
 1. **Warn:** "Without intent.md, the PR summary will lack design rationale. The 'why' context will be limited to what can be inferred from the diff."
-2. **Ask:** proceed anyway, or run `/genie-goose:intent` first?
+2. **Ask:** proceed anyway, or run the `intent` skill first?
 3. If the user confirms, derive context from available artifacts and git diff.
 
 ## Procedure
@@ -81,7 +81,8 @@ If intent.md is missing:
 
 ## Rules
 
-- This skill runs in a forked context. Only create artifact files — do NOT modify source code.
+- Complete this skill in the current thread by default. A delegated helper is optional only when the host supports it and the user explicitly asks for it.
+- Only create artifact files — do NOT modify source code.
 - All PR body content must be traceable to pipeline artifacts or git diff. Do not fabricate information.
 - If an optional artifact is missing, omit or simplify the corresponding section — do not guess.
 - The Summary section must explain "why" (from intent.md), not just "what" (from diff).

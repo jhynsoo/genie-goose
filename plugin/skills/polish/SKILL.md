@@ -119,5 +119,5 @@ CLAIM:  "Task N complete — all steps verified" ← per-step evidence
 
 ## Integration
 
-This skill is referenced by `/genie-goose:implement` and `/genie-goose:honk`.
-It can also be invoked standalone via `/genie-goose:polish` for any task.
+This skill is referenced by `implement` and `honk`.
+It can also be invoked standalone for any task.
