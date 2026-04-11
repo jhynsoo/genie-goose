@@ -14,19 +14,19 @@ Document the design intent so that future reviewers understand WHY decisions wer
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/design.md` — provides agreed requirements and chosen approach.
+- `.goose-artifacts/{branch}/brief.md` — provides agreed requirements and chosen approach.
 - `.goose-artifacts/{branch}/architecture.md` — provides component structure and data flow.
 - `.goose/conventions.yaml` — optional but recommended for conflict detection.
 - `.goose/decisions.yaml` — optional but recommended for conflict detection.
 
-If design.md or architecture.md is missing:
-1. **Warn:** "Missing artifacts reduce context for intent documentation. Without design.md/architecture.md, design decisions may lack grounding."
+If brief.md or architecture.md is missing:
+1. **Warn:** "Missing artifacts reduce context for intent documentation. Without brief.md/architecture.md, design decisions may lack grounding."
 2. **Ask:** proceed anyway, or run the prerequisite step first?
 3. If the user confirms, proceed using available context.
 
 ## Procedure
 
-1. **Read** whatever artifacts exist (design.md, architecture.md, conventions.yaml, decisions.yaml). If some are missing and the user chose to proceed, work from available context and conversation history.
+1. **Read** whatever artifacts exist (brief.md, architecture.md, conventions.yaml, decisions.yaml). If some are missing and the user chose to proceed, work from available context and conversation history.
 
 2. **Draft intent.md** covering:
    - Task overview (what is being built and why)

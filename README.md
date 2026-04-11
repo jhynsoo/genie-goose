@@ -141,7 +141,7 @@ Run any skill independently:
 | `Claude: /genie-goose:goose <topic>` `Codex: $goose <topic>` | Full 9-step pipeline preset. |
 | `Codex: @genie-goose <topic>` | Plugin/router entrypoint. Let genie-goose classify the request and choose the next skill. |
 | `Claude: /genie-goose:rub <topic>` `Codex: $rub <topic>` | Collaborative brainstorming — asks clarifying questions, proposes 2-3 approaches |
-| `Claude: /genie-goose:architecture` `Codex: $architecture` | Design technical architecture based on brainstorm result |
+| `Claude: /genie-goose:architecture` `Codex: $architecture` | Design technical architecture based on the approved brief |
 | `Claude: /genie-goose:intent` `Codex: $intent` | Document design decisions + detect conflicts with conventions/decisions |
 | `Claude: /genie-goose:write-plan` `Codex: $write-plan` | Write detailed implementation plan with micro-tasks and test snippets |
 | `Claude: /genie-goose:criteria` `Codex: $criteria` | Extract relevant conventions/decisions and build review criteria |
@@ -159,7 +159,7 @@ Missing prerequisite artifacts produce warnings, not blocks — you can always p
 ### Workflow Diagram
 
 ```
-rub ───────────→ design.md
+rub ───────────→ brief.md
                     │
 architecture ───→ architecture.md
                     │

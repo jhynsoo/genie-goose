@@ -141,7 +141,7 @@ Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugin/ho
 | `Claude: /genie-goose:goose <주제>` `Codex: $goose <주제>` | 전체 9단계 파이프라인 프리셋 |
 | `Codex: @genie-goose <주제>` | 플러그인/라우터 엔트리포인트. 요청을 분류한 뒤 다음 스킬을 고릅니다. |
 | `Claude: /genie-goose:rub <주제>` `Codex: $rub <주제>` | 브레인스토밍 — 질문을 통해 요구사항을 파악하고 2-3가지 접근 방식 제안 |
-| `Claude: /genie-goose:architecture` `Codex: $architecture` | 브레인스토밍 결과를 바탕으로 기술 아키텍처 설계 |
+| `Claude: /genie-goose:architecture` `Codex: $architecture` | 합의된 brief를 바탕으로 기술 아키텍처 설계 |
 | `Claude: /genie-goose:intent` `Codex: $intent` | 설계 의도 문서화 + 컨벤션/결정 충돌 감지 및 변경 제안 |
 | `Claude: /genie-goose:write-plan` `Codex: $write-plan` | 마이크로 태스크와 테스트 코드가 포함된 상세 구현 계획 작성 |
 | `Claude: /genie-goose:criteria` `Codex: $criteria` | 관련 컨벤션/결정을 추출하여 리뷰 평가 기준 수립 |
@@ -159,7 +159,7 @@ Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugin/ho
 ### 워크플로우 다이어그램
 
 ```
-rub ───────────→ design.md
+rub ───────────→ brief.md
                     │
 architecture ───→ architecture.md
                     │

@@ -79,7 +79,7 @@ If prerequisite artifacts are missing:
 - File paths MUST be exact paths verified against the actual codebase. Do not guess.
 - Include test code snippets for every task that involves code changes.
 - Follow TDD pattern: write the failing test first, then implement.
-- Read design.md before starting. Do not ask the user to repeat what was already decided.
+- Read brief.md before starting. Do not ask the user to repeat what was already decided.
 - Present incrementally — do not dump the entire plan at once.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
 

@@ -43,7 +43,7 @@ When the user enters plan mode (via `/plan` or the system's EnterPlanMode), **re
 
 Genie-goose's brainstorming skill provides structured design exploration that is superior to the default plan mode for feature work.
 
-- If `design.md` already exists in `.goose-artifacts/{branch}/`, skip rub and suggest the next logical step (e.g., `architecture` or `write-plan`).
+- If `brief.md` already exists in `.goose-artifacts/{branch}/`, skip rub and suggest the next logical step (e.g., `architecture` or `write-plan`).
 - If the user explicitly requests the default plan mode after being informed, respect their choice.
 
 ## How to Access Skills
@@ -100,8 +100,8 @@ This classification drives the route recommendation below.
 |-------------|-------|-------|
 | Build a new feature end-to-end, full workflow | `goose` | Full 9-step pipeline preset |
 | "Let's brainstorm", "I have an idea", explore approaches | `rub` | Ideation entry point |
-| Design architecture, structure, components | `architecture` | Enriched by design.md if available |
-| Document design intent, check convention conflicts | `intent` | Enriched by design.md + architecture.md |
+| Design architecture, structure, components | `architecture` | Enriched by brief.md if available |
+| Document design intent, check convention conflicts | `intent` | Enriched by brief.md + architecture.md |
 | Write implementation plan, break into tasks | `write-plan` | Enriched by architecture.md + intent.md |
 | Set up evaluation criteria, review standards | `criteria` | Requires conventions.yaml. Enriched by intent.md |
 | Execute the plan, start implementing | `implement` | Enriched by plan.md + intent.md |
@@ -168,7 +168,7 @@ digraph routing {
     start -> is_subagent;
     is_subagent -> skip [label="yes"];
     is_subagent -> full_pipeline [label="no"];
-    needs_brainstorm [label="Creative/feature work\nwithout design.md?" shape=diamond];
+    needs_brainstorm [label="Creative/feature work\nwithout brief.md?" shape=diamond];
     suggest_rub [label="Suggest rub\nor goose first" shape=box style=filled fillcolor=lightyellow];
 
     full_pipeline -> goose [label="yes"];
@@ -196,7 +196,7 @@ digraph routing {
 
 ### Brainstorm Suggestion
 
-If the user's request involves creating, building, or modifying a feature — and `design.md` does not exist in `.goose-artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
+If the user's request involves creating, building, or modifying a feature — and `brief.md` does not exist in `.goose-artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
 
 ## Prerequisite Context Table
 
@@ -205,8 +205,8 @@ Skills are enriched by prior artifacts but most do not hard-require them. Before
 | Skill | Enriching Artifacts | Hard Requirement |
 |-------|---------------------|------------------|
 | `rub` | — | — |
-| `architecture` | `design.md` | — |
-| `intent` | `design.md`, `architecture.md` | — |
+| `architecture` | `brief.md` | — |
+| `intent` | `brief.md`, `architecture.md` | — |
 | `write-plan` | `architecture.md`, `intent.md` | — |
 | `criteria` | `intent.md` | `conventions.yaml` |
 | `implement` | `plan.md`, `intent.md` | — |
@@ -229,8 +229,8 @@ Check `.goose-artifacts/{branch}/` for existing artifacts to provide informed ro
 2. Based on what exists, recommend the next logical step(s).
 3. If the user has a partial set of artifacts, they can jump in at any point.
 
-Example: If design.md and architecture.md exist but intent.md does not:
-> You have design and architecture artifacts. The next step would be `intent`, or you can skip to `write-plan` if you want to start planning directly.
+Example: If brief.md and architecture.md exist but intent.md does not:
+> You have brief and architecture artifacts. The next step would be `intent`, or you can skip to `write-plan` if you want to start planning directly.
 
 ## Non-Pipeline Requests
 

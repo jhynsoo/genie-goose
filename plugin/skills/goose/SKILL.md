@@ -30,18 +30,18 @@ Execute each step in order. Between steps, confirm with the user before proceedi
 
 ### Step 1: Rub
 Invoke the `rub` skill with the user's task as input.
-- Output: `.goose-artifacts/{branch}/design.md`
-- Wait for user approval of the design before continuing.
+- Output: `.goose-artifacts/{branch}/brief.md`
+- Wait for user approval of the brief before continuing.
 
 ### Step 2: Architecture
 Invoke the `architecture` skill.
-- Input: design.md
+- Input: brief.md
 - Output: `.goose-artifacts/{branch}/architecture.md`
 - Wait for user approval of the architecture before continuing.
 
 ### Step 3: Intent
 Invoke the `intent` skill.
-- Input: design.md + architecture.md + conventions.yaml + decisions.yaml
+- Input: brief.md + architecture.md + conventions.yaml + decisions.yaml
 - Output: `.goose-artifacts/{branch}/intent.md` + convention/decision update proposals
 - By default, complete this in the current thread. If the host supports subagents and the user explicitly asks for delegation, a separate helper agent may draft supporting analysis, but the main agent still owns user-facing synthesis and final edits.
 

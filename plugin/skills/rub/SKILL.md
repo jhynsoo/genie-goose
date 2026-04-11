@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Rub
 
-Develop the user's idea into a concrete design through collaborative dialogue.
+Develop the user's idea into a concrete brief through collaborative dialogue.
 
 ## Procedure
 
@@ -17,14 +17,14 @@ Develop the user's idea into a concrete design through collaborative dialogue.
 
 2. **Explore approaches:** Once you understand the requirements, propose 2-3 different approaches with trade-offs. Lead with your recommended option and explain why.
 
-3. **Converge on design:** Present the design section by section. Ask after each section whether it looks right. Cover: architecture, components, data flow, error handling.
+3. **Converge on the brief:** Present the brief section by section. Ask after each section whether it looks right. Cover: architecture, components, data flow, error handling.
 
-4. **Save artifact:** Once the user approves the design, save it to `.goose-artifacts/{branch}/design.md`.
+4. **Save artifact:** Once the user approves the brief, save it to `.goose-artifacts/{branch}/brief.md`.
 
 ## Artifact Format
 
 ```
-# Design: {Topic}
+# Brief: {Topic}
 
 ## Problem Statement
 {What we're solving and why}

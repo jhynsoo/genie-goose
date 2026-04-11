@@ -1,27 +1,27 @@
 ---
 name: architecture
 description: >
-  Design technical architecture based on brainstorm results.
+  Design technical architecture based on the approved brief.
   Define component structure, data flow, and technology choices.
 disable-model-invocation: true
 ---
 
 # Architecture
 
-Design the technical architecture based on the brainstorm design document.
+Design the technical architecture based on the approved brief.
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/design.md` — provides agreed requirements, constraints, and chosen approach from brainstorming.
+- `.goose-artifacts/{branch}/brief.md` — provides agreed requirements, constraints, and chosen approach from brainstorming.
 
-If design.md is missing:
-1. **Warn:** "design.md not found. Architecture decisions will lack grounding in agreed requirements."
+If brief.md is missing:
+1. **Warn:** "brief.md not found. Architecture decisions will lack grounding in agreed requirements."
 2. **Ask:** proceed anyway, or run the `rub` skill first?
 3. If the user confirms, proceed using their description and conversation context.
 
 ## Procedure
 
-1. **Read design.md** (if available) to understand the agreed requirements and approach. If design.md is missing and the user chose to proceed, gather requirements from their description and codebase context.
+1. **Read brief.md** (if available) to understand the agreed requirements and approach. If brief.md is missing and the user chose to proceed, gather requirements from their description and codebase context.
 
 2. **Design architecture** covering:
    - Component/module structure and responsibilities
@@ -64,6 +64,6 @@ If design.md is missing:
 
 ## Rules
 
-- Read design.md before starting. Do not ask the user to repeat what was already decided.
+- Read brief.md before starting. Do not ask the user to repeat what was already decided.
 - Present incrementally — do not dump the entire architecture at once.
 - Resolve the branch name via `git branch --show-current` for the artifact path.

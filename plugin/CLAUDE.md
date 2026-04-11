@@ -8,7 +8,7 @@ All artifacts are stored under `.goose-artifacts/{branch-name}/`.
 Resolve the branch name via `git branch --show-current`.
 
 Artifacts:
-- `design.md` — Brainstorming result
+- `brief.md` — Brainstorming brief
 - `architecture.md` — Architecture design
 - `intent.md` — Design intent document
 - `plan.md` — Implementation plan

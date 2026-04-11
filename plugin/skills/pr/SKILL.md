@@ -15,7 +15,7 @@ Generate a structured PR body from accumulated pipeline artifacts and the git di
 
 - `.goose-artifacts/{branch}/intent.md` — provides design rationale for the "why" in the PR summary.
 - There must be a meaningful git diff against the base branch.
-- Optional but enriching: `architecture.md`, `review-report.md`, `design.md`, `plan.md`, `criteria.md`.
+- Optional but enriching: `architecture.md`, `review-report.md`, `brief.md`, `plan.md`, `criteria.md`.
 
 If intent.md is missing:
 1. **Warn:** "Without intent.md, the PR summary will lack design rationale. The 'why' context will be limited to what can be inferred from the diff."
@@ -30,7 +30,7 @@ If intent.md is missing:
 
 2. **Read inputs:**
    - Required: `intent.md`, `git diff {base}...HEAD`
-   - Optional: `architecture.md`, `review-report.md`, `design.md`, `plan.md`, `criteria.md`
+   - Optional: `architecture.md`, `review-report.md`, `brief.md`, `plan.md`, `criteria.md`
    - Read whatever exists in `.goose-artifacts/{branch}/` — do not fail if optional artifacts are missing.
 
 3. **Analyze changes:**
