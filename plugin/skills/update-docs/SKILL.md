@@ -25,7 +25,7 @@ Manage `.goose/conventions.yaml` and `.goose/decisions.yaml` with bidirectional 
    - `.goose/conventions.yaml`
    - `.goose/decisions.yaml`
    - If either file does not exist, inform the user and offer to create it from the template.
-   - If pipeline artifacts exist in `.goose-artifacts/{branch}/`, read them for additional context.
+   - If pipeline artifacts exist in `.goose/artifacts/{branch}/`, read them for additional context.
 
 3. **Understand the user's intent:** What do they want to add, modify, or remove? Ask clarifying questions if the request is vague.
 

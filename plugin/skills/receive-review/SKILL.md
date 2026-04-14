@@ -104,13 +104,13 @@ Pushback MUST include:
 ## Prerequisites
 
 At least one of:
-- `.goose-artifacts/{branch}/review-report.md` — from honk
+- `.goose/artifacts/{branch}/review-report.md` — from honk
 - GitHub PR review comments — from human reviewers
 - External review feedback — from any source
 
 Optional enriching context:
-- `.goose-artifacts/{branch}/intent.md` — for checking intentional exclusions
-- `.goose-artifacts/{branch}/criteria.md` — for grounding counter-arguments
+- `.goose/artifacts/{branch}/intent.md` — for checking intentional exclusions
+- `.goose/artifacts/{branch}/criteria.md` — for grounding counter-arguments
 
 If no review feedback exists, there is nothing to process. Inform the user.
 

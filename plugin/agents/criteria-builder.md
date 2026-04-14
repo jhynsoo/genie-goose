@@ -14,7 +14,7 @@ You are an evaluation criteria specialist.
 
 1. `.goose/conventions.yaml` — Project coding conventions
 2. `.goose/decisions.yaml` — Architecture decision records (optional)
-3. `.goose-artifacts/{branch}/intent.md` — Design intent document
+3. `.goose/artifacts/{branch}/intent.md` — Design intent document
 4. The current git diff — For understanding the scope of changes
 
 ## Procedure
@@ -32,7 +32,7 @@ You are an evaluation criteria specialist.
 
 ## Output Format
 
-Write the output to `.goose-artifacts/{branch}/criteria.md`:
+Write the output to `.goose/artifacts/{branch}/criteria.md`:
 
 ```
 # Evaluation Criteria

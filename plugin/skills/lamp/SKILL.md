@@ -43,7 +43,7 @@ When the user enters plan mode (via `/plan` or the system's EnterPlanMode), **re
 
 Genie-goose's brainstorming skill provides structured design exploration that is superior to the default plan mode for feature work.
 
-- If `brief.md` already exists in `.goose-artifacts/{branch}/`, skip rub and suggest the next logical step (e.g., `architecture` or `write-plan`).
+- If `brief.md` already exists in `.goose/artifacts/{branch}/`, skip rub and suggest the next logical step (e.g., `architecture` or `write-plan`).
 - If the user explicitly requests the default plan mode after being informed, respect their choice.
 
 ## How to Access Skills
@@ -129,7 +129,7 @@ When the user describes a task (without naming a specific skill), recommend a ro
 **How to recommend:**
 
 1. **Classify** the task using the Task Classification table.
-2. **Check existing artifacts** in `.goose-artifacts/{branch}/` to see what context already exists.
+2. **Check existing artifacts** in `.goose/artifacts/{branch}/` to see what context already exists.
 3. **Recommend a route** tailored to the classification and existing artifacts.
 4. **Present the route** to the user:
 
@@ -196,7 +196,7 @@ digraph routing {
 
 ### Brainstorm Suggestion
 
-If the user's request involves creating, building, or modifying a feature — and `brief.md` does not exist in `.goose-artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
+If the user's request involves creating, building, or modifying a feature — and `brief.md` does not exist in `.goose/artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
 
 ## Prerequisite Context Table
 
@@ -223,7 +223,7 @@ If a **hard requirement** is missing, the skill cannot proceed.
 
 ## Context-Aware Routing
 
-Check `.goose-artifacts/{branch}/` for existing artifacts to provide informed route recommendations:
+Check `.goose/artifacts/{branch}/` for existing artifacts to provide informed route recommendations:
 
 1. Check which artifacts already exist.
 2. Based on what exists, recommend the next logical step(s).

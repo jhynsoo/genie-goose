@@ -14,8 +14,8 @@ Document the design intent so that future reviewers understand WHY decisions wer
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/brief.md` — provides agreed requirements and chosen approach.
-- `.goose-artifacts/{branch}/architecture.md` — provides component structure and data flow.
+- `.goose/artifacts/{branch}/brief.md` — provides agreed requirements and chosen approach.
+- `.goose/artifacts/{branch}/architecture.md` — provides component structure and data flow.
 - `.goose/conventions.yaml` — optional but recommended for conflict detection.
 - `.goose/decisions.yaml` — optional but recommended for conflict detection.
 
@@ -57,7 +57,7 @@ If brief.md or architecture.md is missing:
    - `[DISCUSS]` items for ambiguous points that need clarification
 
 6. **Incorporate feedback** and save:
-   - `.goose-artifacts/{branch}/intent.md`
+   - `.goose/artifacts/{branch}/intent.md`
    - Update `.goose/conventions.yaml` if user approved convention changes
    - Update `.goose/decisions.yaml` if user approved decision changes
 

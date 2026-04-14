@@ -64,7 +64,7 @@ If you cannot explain WHY the bug occurs, you have not found the root cause.
 
 ## Output Artifact
 
-Save to `.goose-artifacts/{branch}/debug-report.md`:
+Save to `.goose/artifacts/{branch}/debug-report.md`:
 
 ```markdown
 # Debug Report: {Brief description}

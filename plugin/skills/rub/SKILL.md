@@ -19,7 +19,7 @@ Develop the user's idea into a concrete brief through collaborative dialogue.
 
 3. **Converge on the brief:** Present the brief section by section. Ask after each section whether it looks right. Cover: architecture, components, data flow, error handling.
 
-4. **Save artifact:** Once the user approves the brief, save it to `.goose-artifacts/{branch}/brief.md`.
+4. **Save artifact:** Once the user approves the brief, save it to `.goose/artifacts/{branch}/brief.md`.
 
 ## Artifact Format
 

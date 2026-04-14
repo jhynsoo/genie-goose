@@ -13,8 +13,8 @@ Execute the implementation plan by following the plan.md checklist step by step.
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/plan.md` — provides a verified task checklist with exact file paths and test code.
-- `.goose-artifacts/{branch}/intent.md` — provides design rationale and intentional exclusions.
+- `.goose/artifacts/{branch}/plan.md` — provides a verified task checklist with exact file paths and test code.
+- `.goose/artifacts/{branch}/intent.md` — provides design rationale and intentional exclusions.
 
 If prerequisite artifacts are missing:
 1. **Warn:** "Without plan.md, implementation will lack a verified task checklist, increasing the risk of scope creep. Without intent.md, intentional exclusions cannot be checked."

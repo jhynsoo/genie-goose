@@ -12,7 +12,7 @@ Design the technical architecture based on the approved brief.
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/brief.md` — provides agreed requirements, constraints, and chosen approach from brainstorming.
+- `.goose/artifacts/{branch}/brief.md` — provides agreed requirements, constraints, and chosen approach from brainstorming.
 
 If brief.md is missing:
 1. **Warn:** "brief.md not found. Architecture decisions will lack grounding in agreed requirements."
@@ -32,7 +32,7 @@ If brief.md is missing:
 
 3. **Present section by section.** Ask the user to approve each section before moving on. If the user requests changes, revise and re-present.
 
-4. **Save artifact** to `.goose-artifacts/{branch}/architecture.md` after full approval.
+4. **Save artifact** to `.goose/artifacts/{branch}/architecture.md` after full approval.
 
 ## Artifact Format
 

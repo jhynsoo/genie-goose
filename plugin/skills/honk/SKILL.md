@@ -15,8 +15,8 @@ Perform an evidence-based code review using the evaluation criteria established 
 
 ## Prerequisites
 
-- `.goose-artifacts/{branch}/criteria.md` — provides grounded evaluation standards with criterion IDs.
-- `.goose-artifacts/{branch}/intent.md` — provides design rationale for intent-implementation mismatch detection.
+- `.goose/artifacts/{branch}/criteria.md` — provides grounded evaluation standards with criterion IDs.
+- `.goose/artifacts/{branch}/intent.md` — provides design rationale for intent-implementation mismatch detection.
 - Implementation must be complete (there should be a meaningful git diff).
 
 If criteria.md or intent.md is missing:
@@ -35,7 +35,7 @@ If criteria.md or intent.md is missing:
    - Classify by priority: [p1], [p2], [p3], or [p4].
    - Provide a concrete suggestion and explain side effects.
 
-3. **Save** the review to `.goose-artifacts/{branch}/review-report.md`.
+3. **Save** the review to `.goose/artifacts/{branch}/review-report.md`.
 
 4. **If working in a delegated helper context, return results** to the main agent for verdict processing. Otherwise, continue with verdict processing in the current thread.
 

@@ -16,13 +16,13 @@ The full 9-step development workflow — recommended for medium-to-large feature
 
 Before starting the pipeline, verify:
 
-1. **Branch:** Resolve the current branch via `git branch --show-current`. The pipeline artifacts will be stored under `.goose-artifacts/{branch}/`.
+1. **Branch:** Resolve the current branch via `git branch --show-current`. The pipeline artifacts will be stored under `.goose/artifacts/{branch}/`.
 2. **Conventions:** Check if `.goose/conventions.yaml` exists. If not, inform the user:
    > `.goose/conventions.yaml` not found. This file is needed for evaluation criteria (step 5). Run the `update-docs` skill to create it from the template, or manually copy this plugin's `.goose/conventions.template.yaml` to `.goose/conventions.yaml` and customize it.
 3. **Decisions:** Check if `.goose/decisions.yaml` exists. If not, inform the user (optional):
    > `.goose/decisions.yaml` not found. This file is optional but recommended for tracking architecture decisions. Run the `update-docs` skill to create it from the template, or manually copy this plugin's `.goose/decisions.template.yaml` to `.goose/decisions.yaml` and customize it.
-4. **Artifact directory:** Create `.goose-artifacts/{branch}/` if it does not exist.
-5. **Gitignore:** Check if `.goose-artifacts/` is in `.gitignore`. If not, suggest adding it.
+4. **Artifact directory:** Create `.goose/artifacts/{branch}/` if it does not exist.
+5. **Gitignore:** Check if `.goose/` or `.goose/artifacts/` is in `.gitignore`. If neither is ignored, suggest adding one of them.
 
 ## Pipeline Steps
 
@@ -30,31 +30,31 @@ Execute each step in order. Between steps, confirm with the user before proceedi
 
 ### Step 1: Rub
 Invoke the `rub` skill with the user's task as input.
-- Output: `.goose-artifacts/{branch}/brief.md`
+- Output: `.goose/artifacts/{branch}/brief.md`
 - Wait for user approval of the brief before continuing.
 
 ### Step 2: Architecture
 Invoke the `architecture` skill.
 - Input: brief.md
-- Output: `.goose-artifacts/{branch}/architecture.md`
+- Output: `.goose/artifacts/{branch}/architecture.md`
 - Wait for user approval of the architecture before continuing.
 
 ### Step 3: Intent
 Invoke the `intent` skill.
 - Input: brief.md + architecture.md + conventions.yaml + decisions.yaml
-- Output: `.goose-artifacts/{branch}/intent.md` + convention/decision update proposals
+- Output: `.goose/artifacts/{branch}/intent.md` + convention/decision update proposals
 - By default, complete this in the current thread. If the host supports subagents and the user explicitly asks for delegation, a separate helper agent may draft supporting analysis, but the main agent still owns user-facing synthesis and final edits.
 
 ### Step 4: Write Plan
 Invoke the `write-plan` skill.
 - Input: architecture.md + intent.md
-- Output: `.goose-artifacts/{branch}/plan.md`
+- Output: `.goose/artifacts/{branch}/plan.md`
 - Wait for user approval of the plan before continuing.
 
 ### Step 5: Criteria
 Invoke the `criteria` skill.
 - Input: intent.md + conventions.yaml + decisions.yaml
-- Output: `.goose-artifacts/{branch}/criteria.md`
+- Output: `.goose/artifacts/{branch}/criteria.md`
 - By default, complete this in the current thread. If the host supports custom agents and the user explicitly asks for delegation, a criteria-focused helper may assist with extraction.
 
 ### Step 6: Implement
@@ -65,14 +65,14 @@ Invoke the `implement` skill.
 ### Step 7: Honk
 Invoke the `honk` skill.
 - Input: criteria.md + intent.md + git diff
-- Output: `.goose-artifacts/{branch}/review-report.md`
+- Output: `.goose/artifacts/{branch}/review-report.md`
 - By default, complete this in the current thread. If the host supports custom agents and the user explicitly asks for delegation, a reviewer helper may assist with evidence gathering.
 - For stricter review processing (e.g., pushback protocol, anti-sycophancy), the user can invoke `receive-review` after this step.
 
 ### Step 8: PR (Optional)
 Invoke the `pr` skill.
 - Input: all artifacts + git diff + review-report.md
-- Output: `.goose-artifacts/{branch}/pr-body.md`
+- Output: `.goose/artifacts/{branch}/pr-body.md`
 - By default, complete this in the current thread. A delegated helper is optional and only appropriate when the host supports it and the user explicitly asks for it.
 - Skip this step if the user does not intend to create a PR — ask before proceeding.
 
@@ -88,7 +88,7 @@ Invoke the `finish` skill.
 
 The `finish` step handles final verification, user options, and cleanup summary.
 If the user skips the finish step, fall back to reporting:
-- Artifacts created in `.goose-artifacts/{branch}/`
+- Artifacts created in `.goose/artifacts/{branch}/`
 - Any remaining action items (REJECT verdicts to reconsider)
 
 ## When to Use the Full Pipeline

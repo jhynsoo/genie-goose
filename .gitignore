@@ -1,5 +1,4 @@
 .goose/
-.goose-artifacts/
 .claude/
 .DS_Store
 *.swp

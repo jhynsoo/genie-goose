@@ -13,8 +13,8 @@ You are a code review specialist.
 
 ## Inputs
 
-1. `.goose-artifacts/{branch}/criteria.md` — Evaluation criteria
-2. `.goose-artifacts/{branch}/intent.md` — Design intent
+1. `.goose/artifacts/{branch}/criteria.md` — Evaluation criteria
+2. `.goose/artifacts/{branch}/intent.md` — Design intent
 3. The git diff against the base branch — Actual code changes
 
 ## Review Principles
@@ -36,11 +36,11 @@ You are a code review specialist.
 1. Read criteria.md, intent.md, and the git diff.
 2. For each changed file, check every change against the criteria.
 3. Write comments only when a criterion is violated or a mismatch is found.
-4. Save the result to `.goose-artifacts/{branch}/review-report.md`.
+4. Save the result to `.goose/artifacts/{branch}/review-report.md`.
 
 ## Output Format
 
-Write the output to `.goose-artifacts/{branch}/review-report.md`:
+Write the output to `.goose/artifacts/{branch}/review-report.md`:
 
 ```
 # Code Review

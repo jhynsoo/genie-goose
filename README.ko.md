@@ -90,12 +90,6 @@ Claude marketplace로 설치한 경우:
 cp ~/.claude/plugins/cache/*/genie-goose/*/plugin/.goose/decisions.template.yaml .goose/decisions.yaml
 ```
 
-`.goose-artifacts/`를 `.gitignore`에 추가하세요 — 플러그인이 브랜치별 산출물을 이 디렉토리에 생성합니다:
-
-```bash
-echo ".goose-artifacts/" >> .gitignore
-```
-
 ## 사용법
 
 genie-goose를 사용하는 세 가지 방법이 있습니다:
@@ -194,7 +188,7 @@ debug           ←── (독립 실행, 선행 조건 없음)
                     → debug-report.md
 ```
 
-모든 산출물은 `.goose-artifacts/{branch-name}/`에 저장됩니다.
+모든 산출물은 `.goose/artifacts/{branch-name}/`에 저장됩니다.
 
 ## 가드 레일
 

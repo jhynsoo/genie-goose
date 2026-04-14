@@ -90,12 +90,6 @@ If you installed via the Claude marketplace instead:
 cp ~/.claude/plugins/cache/*/genie-goose/*/plugin/.goose/decisions.template.yaml .goose/decisions.yaml
 ```
 
-Add `.goose-artifacts/` to your `.gitignore` — the plugin generates per-branch artifacts there:
-
-```bash
-echo ".goose-artifacts/" >> .gitignore
-```
-
 ## Usage
 
 There are three ways to use genie-goose:
@@ -194,7 +188,7 @@ debug           ←── (standalone, no prerequisites)
                     → debug-report.md
 ```
 
-All artifacts are saved to `.goose-artifacts/{branch-name}/`.
+All artifacts are saved to `.goose/artifacts/{branch-name}/`.
 
 ## Guard Rails
 

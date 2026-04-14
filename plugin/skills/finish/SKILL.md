@@ -13,7 +13,7 @@ Pipeline completion — verify, present options, execute, clean up.
 ## Prerequisites
 
 **Full flow** (review-report.md exists):
-- `.goose-artifacts/{branch}/review-report.md` — provides review verdicts.
+- `.goose/artifacts/{branch}/review-report.md` — provides review verdicts.
 - All ACCEPT items in review-report.md should have "Fixed" status.
 
 **Lightweight flow** (no review-report.md):
@@ -55,7 +55,7 @@ Pipeline complete. All verifications passed. Choose how to proceed:
 5. Report: merge commit hash, branch deleted
 
 **Option 2 — Create PR:**
-1. Check if `.goose-artifacts/{branch}/pr-body.md` exists.
+1. Check if `.goose/artifacts/{branch}/pr-body.md` exists.
    - If not: invoke the `pr` skill to generate it.
 2. Push branch to remote: `git push -u origin {branch}`
 3. Create PR using `gh pr create` with the pr-body.md content.
@@ -63,20 +63,20 @@ Pipeline complete. All verifications passed. Choose how to proceed:
 
 **Option 3 — Keep branch:**
 1. Report current branch status: ahead/behind counts, uncommitted changes.
-2. Summarize artifacts in `.goose-artifacts/{branch}/`.
+2. Summarize artifacts in `.goose/artifacts/{branch}/`.
 
 **Option 4 — Discard:**
 1. First confirmation: "This will delete branch {branch} and all uncommitted changes. Type 'discard' to confirm."
 2. Second confirmation: "Are you sure? This cannot be undone."
 3. Only after both confirmations: switch to base branch, delete feature branch.
-4. Delete the artifact directory: `rm -rf .goose-artifacts/{branch}/`
+4. Delete the artifact directory: `rm -rf .goose/artifacts/{branch}/`
 5. Report: branch deleted, artifacts cleaned up.
 
 ### Step 4: CLEAN UP — Post-Completion Report
 
 Regardless of the option chosen, summarize:
 - What was done (merge / PR created / branch kept / discarded)
-- Pipeline artifacts created during this session (list files in `.goose-artifacts/{branch}/`)
+- Pipeline artifacts created during this session (list files in `.goose/artifacts/{branch}/`)
 - Any remaining action items (e.g., REJECT verdicts to reconsider, PR review pending)
 
 ## Rationalizations You Must Reject

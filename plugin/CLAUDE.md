@@ -4,7 +4,7 @@ Composable development workflow framework with guard rails.
 
 ## Artifact Path
 
-All artifacts are stored under `.goose-artifacts/{branch-name}/`.
+All artifacts are stored under `.goose/artifacts/{branch-name}/`.
 Resolve the branch name via `git branch --show-current`.
 
 Artifacts:
