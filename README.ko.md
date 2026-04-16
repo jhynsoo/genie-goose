@@ -33,8 +33,8 @@ Codex 플러그인은 marketplace를 통해 설치합니다. 이 저장소에는
 3. `Genie Goose Local` marketplace를 선택합니다.
 4. `genie-goose`를 설치합니다.
 5. 새 스레드를 열고 `@genie-goose`로 플러그인 엔트리포인트를 호출합니다.
-6. 라우터를 거치지 않고 특정 스킬만 바로 실행하고 싶다면 `$goose`, `$lamp`, `$implement`처럼 개별 스킬을 직접 호출합니다.
-7. `@genie-goose`는 플러그인/라우터 엔트리포인트로 보고, 전체 9단계 파이프라인을 바로 실행하고 싶을 때는 `$goose`를 사용합니다.
+6. 라우터를 거치지 않고 특정 스킬만 바로 실행하고 싶다면 `$rub`, `$lamp`, `$implement`처럼 개별 스킬을 직접 호출합니다.
+7. `@genie-goose`는 플러그인/라우터 엔트리포인트로 보고, 전체 9단계 파이프라인을 바로 실행하고 싶을 때는 `$rub`를 사용합니다.
 
 ### Codex 고급 설정 선택 사항
 
@@ -99,9 +99,9 @@ genie-goose를 사용하는 세 가지 방법이 있습니다:
 하나의 명령으로 전체 9단계 워크플로우를 실행합니다:
 
 ```text
-Claude Code: /genie-goose:goose 사용자 인증 시스템 구축
+Claude Code: /genie-goose:rub 사용자 인증 시스템 구축
 Codex 라우터 엔트리포인트: @genie-goose 사용자 인증 시스템 구축
-Codex 전체 파이프라인 스킬: $goose 사용자 인증 시스템 구축
+Codex 전체 파이프라인 스킬: $rub 사용자 인증 시스템 구축
 ```
 
 **rub → architecture → intent → write-plan → criteria → implement → honk → pr (선택) → finish** 순서로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다. 중대형 기능 개발에 권장됩니다.
@@ -112,7 +112,7 @@ Codex 전체 파이프라인 스킬: $goose 사용자 인증 시스템 구축
 
 | 태스크 규모 | 추천 경로 |
 |------------|----------|
-| 대형 기능 | `goose` (전체 9단계 파이프라인), 또는 `rub → architecture → intent → write-plan → criteria → implement → honk → finish` |
+| 대형 기능 | `rub` (브레인스토밍으로 시작하는 전체 9단계 파이프라인) |
 | 중형 태스크 | `rub → write-plan → implement → honk → finish` |
 | 소형 태스크 | `implement → finish` (또는 스킬 불필요) |
 | 디버그 | `debug` |
@@ -122,7 +122,7 @@ Codex 전체 파이프라인 스킬: $goose 사용자 인증 시스템 구축
 
 Claude Code에서는 `lamp`가 번들된 SessionStart 훅을 통해 세션 시작 시 자동 주입됩니다.
 
-Codex에서는 플러그인 번들 내부의 훅이 자동 로드되지 않습니다. 기본 사용 경로는 `@genie-goose`로 시작해 플러그인 라우터에 태스크를 맡기거나, `$lamp`, `$goose`, `$implement`처럼 특정 번들 스킬을 직접 호출하는 방식입니다.
+Codex에서는 플러그인 번들 내부의 훅이 자동 로드되지 않습니다. 기본 사용 경로는 `@genie-goose`로 시작해 플러그인 라우터에 태스크를 맡기거나, `$lamp`, `$rub`, `$implement`처럼 특정 번들 스킬을 직접 호출하는 방식입니다.
 
 Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugin/hooks/session-start` 스크립트를 `~/.codex/hooks.json` 또는 `<repo>/.codex/hooks.json`에 연결해야 합니다. Codex 공식 문서는 훅을 플러그인 매니페스트가 아니라 Codex 설정 레이어 옆에서 읽는다고 안내합니다.
 
@@ -132,9 +132,9 @@ Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugin/ho
 
 | 명령 | 설명 |
 |------|------|
-| `Claude: /genie-goose:goose <주제>` `Codex: $goose <주제>` | 전체 9단계 파이프라인 프리셋 |
+| `Claude: /genie-goose:rub <주제>` `Codex: $rub <주제>` | 브레인스토밍으로 시작하는 전체 9단계 파이프라인 프리셋. 아이데이션만 원하면 그렇게 명시하고 `brief.md`에서 멈춥니다. |
 | `Codex: @genie-goose <주제>` | 플러그인/라우터 엔트리포인트. 요청을 분류한 뒤 다음 스킬을 고릅니다. |
-| `Claude: /genie-goose:rub <주제>` `Codex: $rub <주제>` | 브레인스토밍 — 질문을 통해 요구사항을 파악하고 2-3가지 접근 방식 제안 |
+| `Claude: /genie-goose:goose <주제>` `Codex: $goose <주제>` | `rub`의 레거시 별칭. 하위 호환성을 위해 유지됩니다. |
 | `Claude: /genie-goose:architecture` `Codex: $architecture` | 합의된 brief를 바탕으로 기술 아키텍처 설계 |
 | `Claude: /genie-goose:intent` `Codex: $intent` | 설계 의도 문서화 + 컨벤션/결정 충돌 감지 및 변경 제안 |
 | `Claude: /genie-goose:write-plan` `Codex: $write-plan` | 마이크로 태스크와 테스트 코드가 포함된 상세 구현 계획 작성 |
@@ -226,7 +226,7 @@ Codex에서 로컬 테스트:
 2. `/plugins`를 엽니다.
 3. `Genie Goose Local`에서 `genie-goose`를 설치하거나 재설치합니다.
 4. 새 스레드에서 `@genie-goose`를 플러그인/라우터 엔트리포인트로 사용합니다.
-5. 라우터를 우회하고 싶을 때만 특정 `$skill`을 사용합니다. 예: 전체 파이프라인은 `$goose`.
+5. 라우터를 우회하고 싶을 때만 특정 `$skill`을 사용합니다. 예: 전체 파이프라인은 `$rub`.
 
 ## 라이선스
 

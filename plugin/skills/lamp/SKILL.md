@@ -41,7 +41,7 @@ If the project's CLAUDE.md says "don't use TDD" and a skill says "always TDD," f
 
 When the user enters plan mode (via `/plan` or the system's EnterPlanMode), **redirect to the `rub` skill** instead of using the default plan mode.
 
-Genie-goose's brainstorming skill provides structured design exploration that is superior to the default plan mode for feature work.
+Genie-goose's `rub` flow provides structured design exploration that is superior to the default plan mode for feature work.
 
 - If `brief.md` already exists in `.goose/artifacts/{branch}/`, skip rub and suggest the next logical step (e.g., `architecture` or `write-plan`).
 - If the user explicitly requests the default plan mode after being informed, respect their choice.
@@ -70,14 +70,14 @@ When you invoke a skill, its content is loaded and presented to you — follow i
 
 When evaluating the routing table, check in this priority order:
 
-1. **Process skills first** — `rub` (brainstorming), `debug` (debugging)
+1. **Process skills first** — `rub` (brainstorming-first feature entry), `debug` (debugging)
    → These determine HOW to approach the task. Check before anything else.
-2. **Pipeline skills** — `goose`, `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `receive-review`, `pr`, `finish`
+2. **Pipeline skills** — `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `receive-review`, `pr`, `finish`
    → These guide execution. Check if no process skill applies.
 3. **Utility skills** — `update-docs`, `polish`
    → Standalone support. Check last.
 
-If the user says "add a login feature," don't jump to `implement` — check `rub` or `goose` first.
+If the user says "add a login feature," don't jump to `implement` — check `rub` first.
 If the user reports an error, don't jump to editing code — check `debug` first.
 
 ## Task Classification
@@ -98,8 +98,8 @@ This classification drives the route recommendation below.
 
 | User Intent | Skill | Notes |
 |-------------|-------|-------|
-| Build a new feature end-to-end, full workflow | `goose` | Full 9-step pipeline preset |
-| "Let's brainstorm", "I have an idea", explore approaches | `rub` | Ideation entry point |
+| Build a new feature end-to-end, full workflow | `rub` | Brainstorming-first full workflow entrypoint |
+| "Let's brainstorm", "I have an idea", explore approaches | `rub` | Ideation entry point. Stops after `brief.md` only if the user wants brainstorming only |
 | Design architecture, structure, components | `architecture` | Enriched by brief.md if available |
 | Document design intent, check convention conflicts | `intent` | Enriched by brief.md + architecture.md |
 | Write implementation plan, break into tasks | `write-plan` | Enriched by architecture.md + intent.md |
@@ -120,7 +120,7 @@ When the user describes a task (without naming a specific skill), recommend a ro
 
 | Classification | Recommended Route |
 |---------------|-------------------|
-| **Full feature** | `goose` (full 9-step pipeline), or `rub → architecture → intent → write-plan → criteria → implement → honk → finish` |
+| **Full feature** | `rub` (brainstorming-first full 9-step pipeline) |
 | **Medium task** | `rub → write-plan → implement → honk → finish` |
 | **Small task** | `implement → finish` (or no skill, just polish) |
 | **Debug** | `debug` |
@@ -136,8 +136,6 @@ When the user describes a task (without naming a specific skill), recommend a ro
    > Based on your request, I'd recommend this route:
    > **rub → write-plan → implement → honk → finish**
    > This covers design, planning, implementation, and review. Want to adjust?
-   >
-   > You can also run the full 9-step pipeline with `goose`, or start with just `implement` if you already know what to build.
 
 5. **The user decides.** They can accept, add/remove steps, choose the full pipeline, or start a specific skill directly.
 
@@ -156,7 +154,7 @@ digraph routing {
     is_subagent [label="Am I a subagent?" shape=diamond];
     skip [label="Skip this skill\nproceed normally" shape=box];
     full_pipeline [label="Full feature workflow?" shape=diamond];
-    goose [label="Invoke goose" shape=box style=filled fillcolor=lightgreen];
+    rub_pipeline [label="Invoke rub" shape=box style=filled fillcolor=lightgreen];
     specific_step [label="Matches a specific\npipeline step?" shape=diamond];
     check_prereqs [label="Enriching artifacts\navailable?" shape=diamond];
     invoke_skill [label="Invoke the matched skill" shape=box style=filled fillcolor=lightgreen];
@@ -169,9 +167,9 @@ digraph routing {
     is_subagent -> skip [label="yes"];
     is_subagent -> full_pipeline [label="no"];
     needs_brainstorm [label="Creative/feature work\nwithout brief.md?" shape=diamond];
-    suggest_rub [label="Suggest rub\nor goose first" shape=box style=filled fillcolor=lightyellow];
+    suggest_rub [label="Suggest rub first" shape=box style=filled fillcolor=lightyellow];
 
-    full_pipeline -> goose [label="yes"];
+    full_pipeline -> rub_pipeline [label="yes"];
     full_pipeline -> needs_brainstorm [label="no"];
     needs_brainstorm -> suggest_rub [label="yes"];
     needs_brainstorm -> specific_step [label="no"];
@@ -197,6 +195,11 @@ digraph routing {
 ### Brainstorm Suggestion
 
 If the user's request involves creating, building, or modifying a feature — and `brief.md` does not exist in `.goose/artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
+
+## Legacy Alias
+
+If the user explicitly asks for `goose`, treat it as a backward-compatible alias for `rub`.
+Do not recommend `goose` as the primary full-flow entrypoint.
 
 ## Prerequisite Context Table
 

@@ -32,7 +32,7 @@
     "defaultPrompt": [
       "Route this coding task through genie-goose.",
       "Use genie-goose to plan, implement, and review this change.",
-      "Run the goose workflow for this feature."
+      "Run the rub workflow for this feature."
     ],
     "brandColor": "#2F855A",
     "screenshots": []

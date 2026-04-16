@@ -11,8 +11,8 @@ claude --plugin-dir ./plugin
 ```
 
 Available skills (all require manual invocation):
-- `/genie-goose:goose` — Full 9-step pipeline preset (recommended for large features)
-- `/genie-goose:rub` — Brainstorming
+- `/genie-goose:rub` — Brainstorming-first full 9-step pipeline preset (recommended for large features)
+- `/genie-goose:goose` — Legacy alias for `rub`
 - `/genie-goose:architecture` — Architecture design
 - `/genie-goose:intent` — Design intent + conflict detection (fork)
 - `/genie-goose:write-plan` — Implementation plan
