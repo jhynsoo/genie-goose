@@ -26,7 +26,7 @@ claude plugin install genie-goose@genie-goose --scope project
 
 ### Codex
 
-Codex plugins are installed from marketplaces. This repository includes a repo-local marketplace file at `.agents/plugins/marketplace.json` that points to `./plugin`, so you can test genie-goose in Codex without copying files elsewhere.
+Codex plugins are installed from marketplaces. This repository includes a repo-local marketplace file at `.agents/plugins/marketplace.json` that points to `./plugins/genie-goose`, so you can test genie-goose in Codex without copying files elsewhere.
 
 1. Restart Codex after pulling this repo so it reloads repo-local marketplaces.
 2. Start Codex and open the plugin directory with `/plugins`.
@@ -44,7 +44,7 @@ If you also want reusable custom agents for review-oriented delegation, copy the
 
 ```bash
 mkdir -p .codex/agents
-cp ./plugin/assets/codex-agents/*.toml .codex/agents/
+cp ./plugins/genie-goose/assets/codex-agents/*.toml .codex/agents/
 ```
 
 Those templates are opt-in. Codex only spawns subagents when you explicitly ask it to, so installing the files does not change the default `@genie-goose` behavior by itself.
@@ -57,13 +57,13 @@ If you are working from this repository or using the repo-local Codex marketplac
 
 ```bash
 mkdir -p .goose
-cp ./plugin/.goose/conventions.template.yaml .goose/conventions.yaml
+cp ./.goose/conventions.example.yaml .goose/conventions.yaml
 ```
 
 If you installed via the Claude marketplace instead:
 
 ```bash
-cp ~/.claude/plugins/cache/*/genie-goose/*/plugin/.goose/conventions.template.yaml .goose/conventions.yaml
+cp ~/.claude/plugins/cache/*/genie-goose/*/.goose/conventions.example.yaml .goose/conventions.yaml
 ```
 
 Edit `.goose/conventions.yaml` to match your team's coding standards. The file uses a flat YAML structure:
@@ -81,13 +81,13 @@ Optionally, create a decisions file to track architecture decisions:
 If you are working from this repository or using the repo-local Codex marketplace:
 
 ```bash
-cp ./plugin/.goose/decisions.template.yaml .goose/decisions.yaml
+cp ./.goose/decisions.example.yaml .goose/decisions.yaml
 ```
 
 If you installed via the Claude marketplace instead:
 
 ```bash
-cp ~/.claude/plugins/cache/*/genie-goose/*/plugin/.goose/decisions.template.yaml .goose/decisions.yaml
+cp ~/.claude/plugins/cache/*/genie-goose/*/.goose/decisions.example.yaml .goose/decisions.yaml
 ```
 
 ## Usage
@@ -124,7 +124,7 @@ In Claude Code, `lamp` is auto-injected at session start via the bundled Session
 
 In Codex, plugin-bundled hooks are not loaded automatically. The default path is to start with `@genie-goose` and let the plugin route the task, or call a specific bundled skill with `$lamp`, `$rub`, `$implement`, and so on.
 
-If you want the same automatic session-start routing in Codex, wire the existing `plugin/hooks/session-start` script into `~/.codex/hooks.json` or `<repo>/.codex/hooks.json`. Codex's hooks documentation requires hooks to live next to Codex config layers rather than inside the plugin manifest.
+If you want the same automatic session-start routing in Codex, wire the existing `plugins/genie-goose/hooks/session-start` script into `~/.codex/hooks.json` or `<repo>/.codex/hooks.json`. Codex's hooks documentation requires hooks to live next to Codex config layers rather than inside the plugin manifest.
 
 ### 3. Direct Invocation
 
@@ -217,7 +217,7 @@ Each comment receives an **ACCEPT** (fix it) or **REJECT** (skip it) verdict fro
 To test changes to the plugin locally in Claude Code:
 
 ```bash
-claude --plugin-dir ./plugin
+claude --plugin-dir ./plugins/genie-goose
 ```
 
 To test changes locally in Codex:

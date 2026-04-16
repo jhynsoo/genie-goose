@@ -16,7 +16,7 @@ Establish evaluation criteria for the upcoming code review by extracting relevan
 ## Prerequisites
 
 - `.goose/artifacts/{branch}/intent.md` — provides task-specific context for filtering relevant conventions.
-- `.goose/conventions.yaml` — **required**. The source of evaluation criteria. If not found, inform the user: "Run the `update-docs` skill to create it from the template, or manually copy this plugin's `.goose/conventions.template.yaml` to `.goose/conventions.yaml` and customize it."
+- `.goose/conventions.yaml` — **required**. The source of evaluation criteria. If not found, inform the user: "Run the `update-docs` skill to create it from the example file, or manually copy this plugin's `.goose/conventions.example.yaml` to `.goose/conventions.yaml` and customize it."
 - `.goose/decisions.yaml` — optional. If it exists, relevant ADR items will be included in the criteria.
 
 If intent.md is missing:

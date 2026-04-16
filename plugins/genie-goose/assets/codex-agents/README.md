@@ -6,7 +6,7 @@ Copy them into `.codex/agents/` for project-scoped setup or `~/.codex/agents/` f
 
 ```bash
 mkdir -p .codex/agents
-cp ./plugin/assets/codex-agents/*.toml .codex/agents/
+cp ./assets/codex-agents/*.toml .codex/agents/
 ```
 
 Installing the templates does not change the default plugin behavior. Codex only spawns subagents when the user explicitly asks for delegation.

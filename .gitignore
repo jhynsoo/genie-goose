@@ -1,4 +1,7 @@
-.goose/
+.goose/*
+!.goose/conventions.example.yaml
+!.goose/decisions.example.yaml
+.goose/artifacts/
 .claude/
 .DS_Store
 *.swp

@@ -4,9 +4,9 @@
   "plugins": [
     {
       "name": "genie-goose",
-      "source": "./plugin",
+      "source": "./plugins/genie-goose",
       "description": "Pipeline-based development workflow framework: brainstorm, architecture, design-intent, evaluation-criteria, implement, review, PR generation, convention/ADR management",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

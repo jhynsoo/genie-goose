@@ -1,6 +1,6 @@
 {
   "name": "genie-goose",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Composable development workflow framework with PR generation and convention/ADR management",
   "author": {
     "name": "jhynsoo",

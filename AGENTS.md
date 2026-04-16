@@ -1,14 +1,22 @@
 # Genie Goose
 
-Composable development workflow plugin for Claude Code.
+Composable development workflow plugin for Claude Code and Codex.
 
 ## Development
 
-Test the plugin locally:
+Test the Claude Code plugin locally:
 
 ```bash
-claude --plugin-dir ./plugin
+claude --plugin-dir ./plugins/genie-goose
 ```
+
+Test the Codex plugin locally:
+
+1. Restart Codex so it reloads `.agents/plugins/marketplace.json`.
+2. Open `/plugins`.
+3. Install or reinstall `genie-goose` from `Genie Goose Local`.
+4. Start a new thread and use `@genie-goose` as the plugin/router entrypoint.
+5. Use a specific `$skill` only when you want to bypass the router, for example `$rub`.
 
 Available skills (all require manual invocation):
 - `/genie-goose:rub` — Brainstorming-first full 9-step pipeline preset (recommended for large features)
