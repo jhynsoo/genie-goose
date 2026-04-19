@@ -1,10 +1,12 @@
 ---
 name: autogoose
 description: >
-  Enable autogoose for the current workflow by persisting
-  branch-local workflow mode state. Downstream workflow skills
-  should use that state to skip in-scope approval prompts.
-disable-model-invocation: true
+  Enable autogoose / auto mode for the current workflow when the user
+  says "autogoose", asks to stop asking for approvals, or wants the
+  workflow to continue automatically. Persists branch-local workflow
+  mode state so downstream genie-goose skills can skip in-scope
+  approval prompts while keeping merge, PR creation, discard, and
+  remote push under explicit user choice.
 ---
 
 # Autogoose
@@ -15,8 +17,9 @@ that downstream genie-goose skills must honor.
 
 ## Accepted Activation Surfaces
 
-- free-text `autogoose`
-- direct invocation of `autogoose`
+- free-text `autogoose` (host description-match routing)
+- direct invocation of `autogoose` (lamp router or programmatic skill call)
+- slash command `/genie-goose:autogoose` (Claude Code) / `$autogoose` (Codex)
 
 ## Procedure
 
