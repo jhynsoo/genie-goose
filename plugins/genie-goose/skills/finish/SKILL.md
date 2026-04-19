@@ -20,6 +20,8 @@ Pipeline completion — verify, present options, execute, clean up.
 - Warn: "No review-report.md found. Finish will verify tests and build but cannot check review verdicts."
 - Ask the user to confirm before proceeding.
 - The polish gate (tests + build) still applies regardless.
+  - If autogoose is active, keep the warning but proceed to verification
+    without asking for confirmation.
 
 ## Procedure
 
@@ -78,6 +80,7 @@ Regardless of the option chosen, summarize:
 - What was done (merge / PR created / branch kept / discarded)
 - Pipeline artifacts created during this session (list files in `.goose/artifacts/{branch}/`)
 - Any remaining action items (e.g., REJECT verdicts to reconsider, PR review pending)
+- Autogoose cleanup status (`removed` / `inactive` / `not present`)
 
 ## Rationalizations You Must Reject
 
@@ -96,3 +99,8 @@ Regardless of the option chosen, summarize:
 - Reads: `review-report.md`, `pr-body.md` (optional).
 - Enriched by: `review-report.md` (from honk). Works without it in lightweight flows.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
+- Always clear or inactivate autogoose when the current workflow ends or is
+  explicitly parked. Do not carry it into a new workflow.
+- Autogoose never changes the final user-owned choice among merge / create PR /
+  keep branch / discard.

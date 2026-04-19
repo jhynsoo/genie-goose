@@ -3,7 +3,8 @@ name: honk
 description: >
   Evidence-based code review using evaluation criteria.
   Produce review-report.md with per-comment
-  ACCEPT/REJECT verdicts confirmed by the user.
+  ACCEPT/REJECT verdicts. Under autogoose, the agent owns
+  in-scope verdict judgments.
 disable-model-invocation: true
 context: fork
 agent: reviewer
@@ -11,7 +12,10 @@ agent: reviewer
 
 # Honk
 
-Perform an evidence-based code review using the evaluation criteria established earlier. Each review comment receives a user-confirmed ACCEPT/REJECT verdict.
+Perform an evidence-based code review using the evaluation criteria established
+earlier. Each review comment receives an explicit ACCEPT/REJECT verdict. When
+autogoose is active, the agent owns those in-scope verdict judgments instead of
+collecting them from the user.
 
 ## Prerequisites
 
@@ -23,6 +27,8 @@ If criteria.md or intent.md is missing:
 1. **Warn:** "Without criteria.md, the review will lack grounded evaluation standards. Without intent.md, intent-implementation mismatch detection is unavailable."
 2. **Ask:** proceed anyway, or run the prerequisite step first?
 3. If the user confirms, proceed with fallback review standards.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     fallback standards instead of asking for confirmation.
 
 **Fallback when criteria.md is missing:** Review against (a) `.goose/conventions.yaml` directly if available, (b) general code quality standards. Flag to the user that review depth is reduced.
 
@@ -59,14 +65,26 @@ After drafting review-report.md:
    **[p2] Judgment** — Present the agent's recommendation with reasoning. User confirms or overrides.
    **[p3] Recommendation** — Offer suggestion but defer entirely to the user.
    **[p4] Bulk** — User can "accept all", "reject all", or cherry-pick.
+   - If autogoose is active, you may still summarize the batch for traceability,
+     but do not wait for a user response before continuing.
 
-2. **Collect all verdicts** before making any code changes. Do not start fixing until the user has reviewed the entire batch.
+2. **Collect all verdicts** before making any code changes. Do not start fixing
+   until the user has reviewed the entire batch.
+   - If autogoose is active, replace user verdict collection with agent-owned
+     judgments. Use this default policy:
+     - `[p1]` default to ACCEPT unless fixing it would violate the design intent
+       or current workflow scope.
+     - `[p2]` use agent judgment based on criteria impact and implementation
+       cost.
+     - `[p3]` and `[p4]` may be ACCEPT or REJECT based on whether they improve
+       the current change without expanding scope.
 
-<!-- HARD-GATE: Do not begin fixing until ALL verdicts are collected from the user -->
+<!-- HARD-GATE: When autogoose is inactive, do not begin fixing until ALL verdicts are collected from the user -->
 
 3. **Fix all ACCEPT items**, then apply the `polish` gate (RUN tests → READ output → VERIFY pass) before committing.
 
-4. **Record REJECT reasons** provided by the user.
+4. **Record REJECT reasons** provided by the user, or the agent's rationale when
+   autogoose is active.
 
 5. **Append verdict** to each comment in review-report.md:
    ```
@@ -74,7 +92,7 @@ After drafting review-report.md:
    ```
    or
    ```
-   - **Verdict: REJECT** — {User's reason for rejection}.
+   - **Verdict: REJECT** — {User's reason for rejection or the agent's rationale}.
    ```
 
 <!-- HARD-GATE: Do not claim review cycle complete without fresh full-suite polish gate evidence -->
@@ -92,15 +110,17 @@ After drafting review-report.md:
 - All comments MUST cite a criterion from criteria.md. If criteria.md is unavailable, cite the convention ID from conventions.yaml or the specific best-practice standard being applied. No opinion-based reviews.
 - Respect intentional design decisions. Flag only intent-implementation mismatches.
 - When suggesting changes, MUST explain side effects.
-- Never auto-fix without user verdict. Always present ACCEPT/REJECT choice first.
+- When autogoose is inactive, never auto-fix without a user verdict. When
+  autogoose is active, the agent may assign in-scope verdicts and continue.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
 
 ## Rationalizations You Must Reject
 
 | Excuse | Reality | Required Action |
 |--------|---------|-----------------|
 | "This criterion obviously applies, no citation needed" | Every comment must trace to criteria.md | Find and cite the specific criterion ID before writing the comment |
-| "This is clearly an ACCEPT, I can auto-fix" | Verdicts come from the user, not the agent | Present all comments → collect all verdicts → then fix |
+| "This is clearly an ACCEPT, I can auto-fix" | Verdicts come from the user unless autogoose is active | Follow the active workflow mode before fixing |
 | "The user probably doesn't care about this p1" | p1 means must-fix — skipping requires explicit REJECT | Present the p1 with full detail; only skip on explicit user REJECT with justification |
 | "All individual fixes passed, no need for final QA" | Individual passes do not prove integrated correctness | Run full build + test suite as final QA via the `polish` skill |
 | "These are all minor, just ACCEPT all" | Batch-approving skips judgment on each item | Present each priority group separately; user must confirm each group |

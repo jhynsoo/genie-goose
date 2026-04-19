@@ -23,6 +23,8 @@ If intent.md is missing:
 1. **Warn:** "Without intent.md, criteria extraction will lack task-specific context and may include irrelevant conventions."
 2. **Ask:** proceed anyway, or run the `intent` skill first?
 3. If the user confirms, use the user's task description and git diff to infer scope for convention filtering.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     available context instead of asking for confirmation.
 
 ## Procedure
 
@@ -39,9 +41,14 @@ If intent.md is missing:
 
 4. **Draft criteria.md** merging common criteria, task-specific criteria, and ADR-based criteria. For each criterion, add a "How to apply" note specific to this task.
 
-5. **Present the draft** to the user with discussion points about criteria whose scope is ambiguous.
+5. **Present the draft** to the user with discussion points about criteria whose
+   scope is ambiguous.
+   - If autogoose is active, make the in-scope judgment yourself, note any
+     assumptions in the draft, and do not stop for confirmation.
 
 6. **Incorporate feedback** and save to `.goose/artifacts/{branch}/criteria.md`.
+   - If autogoose is active, save the best current draft immediately and
+     continue the workflow.
 
 ## Rules
 
@@ -49,3 +56,4 @@ If intent.md is missing:
 - Complete this skill in the current thread by default. If the host supports delegation and the user explicitly asks for a helper agent, you may delegate extraction work, but the main agent still owns the final criteria draft and user-facing synthesis.
 - Only create artifact files — do NOT modify source code.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.

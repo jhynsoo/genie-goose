@@ -18,6 +18,8 @@ If brief.md is missing:
 1. **Warn:** "brief.md not found. Architecture decisions will lack grounding in agreed requirements."
 2. **Ask:** proceed anyway, or run the `rub` skill first?
 3. If the user confirms, proceed using their description and conversation context.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     available context instead of asking for confirmation.
 
 ## Procedure
 
@@ -30,9 +32,13 @@ If brief.md is missing:
    - Key interfaces and contracts
    - File/directory structure
 
-3. **Present section by section.** Ask the user to approve each section before moving on. If the user requests changes, revise and re-present.
+3. **Present section by section.** Ask the user to approve each section before
+   moving on. If the user requests changes, revise and re-present.
+   - If autogoose is active, draft the full architecture, save it, and continue
+     without section-by-section approval.
 
-4. **Save artifact** to `.goose/artifacts/{branch}/architecture.md` after full approval.
+4. **Save artifact** to `.goose/artifacts/{branch}/architecture.md` after full
+   approval, or immediately after drafting it when autogoose is active.
 
 ## Artifact Format
 
@@ -67,3 +73,6 @@ If brief.md is missing:
 - Read brief.md before starting. Do not ask the user to repeat what was already decided.
 - Present incrementally — do not dump the entire architecture at once.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
+- If autogoose is active, skip only questions that gate normal workflow
+  progress.

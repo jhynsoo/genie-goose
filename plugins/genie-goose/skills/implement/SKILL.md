@@ -20,8 +20,14 @@ If prerequisite artifacts are missing:
 1. **Warn:** "Without plan.md, implementation will lack a verified task checklist, increasing the risk of scope creep. Without intent.md, intentional exclusions cannot be checked."
 2. **Ask:** proceed anyway, or run the prerequisite step first?
 3. If the user confirms, proceed using their instructions directly.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     available context instead of asking for confirmation.
 
-**When operating without plan.md:** Create an ad-hoc task list from the user's request before starting implementation. Confirm the list with the user. Apply the same verification discipline (polish gate per task, frequent commits).
+**When operating without plan.md:** Create an ad-hoc task list from the user's
+request before starting implementation. Confirm the list with the user. Apply
+the same verification discipline (polish gate per task, frequent commits). If
+autogoose is active, create the ad-hoc task list yourself and proceed without
+waiting for confirmation.
 
 ## Procedure
 
@@ -38,19 +44,26 @@ If prerequisite artifacts are missing:
    - Report the issue to the user
    - Propose an adjustment to the plan
    - Wait for user approval before proceeding with the change
+   - If autogoose is active and the adjustment is still within the current
+     workflow scope and design intent, make the minimal adjustment yourself and
+     record it in the completion summary instead of asking.
+   - If the change would expand scope or require external/destructive action,
+     stop and ask the user even under autogoose.
 
 <!-- HARD-GATE: Do not claim complete without all plan.md checkboxes verified with fresh evidence -->
 4. **Report completion** with a summary of what was implemented and any deviations from the plan.
 
 ## Rules
 
-- Follow the plan document. Do not deviate from agreed-upon tasks without user approval.
+- Follow the plan document. Do not deviate from agreed-upon tasks without user
+  approval when autogoose is inactive.
 - Respect intentional exclusions from the design intent document.
 - Write tests alongside implementation when the project has a test framework.
 - Make frequent, small commits with descriptive messages.
 - Do not skip steps or reorder tasks unless there is a blocking dependency issue.
 - Before claiming any task is complete, apply the `polish` verification gate. Never report "done" without fresh evidence from a verification command.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
 
 ## Parallel Execution
 
@@ -84,7 +97,7 @@ When the plan contains independent tasks, consider dispatching them in parallel.
 |--------|---------|-----------------|
 | "This is too simple to test" | Simple code hides the most subtle bugs | Write the test first, then the code |
 | "I already checked mentally" | Mental checks are not evidence | Run the `polish` gate — no exceptions |
-| "The plan is slightly wrong, I'll just adjust" | Plan deviations require approval | Report issue → propose adjustment → wait for user approval |
+| "The plan is slightly wrong, I'll just adjust" | Plan deviations require approval unless autogoose allows an in-scope adjustment | Report issue → make the smallest intent-safe adjustment → record it clearly |
 | "I'll commit everything at the end" | Large commits hide mistakes | Commit after each task passes verification |
 | "This small addition makes sense" | Intent exclusions exist for a reason | Check intent.md exclusions — do not add excluded items without user approval |
 | "No test framework in this project" | Lack of test framework does not excuse skipping verification | Use build, lint, or manual verification — document what was checked |

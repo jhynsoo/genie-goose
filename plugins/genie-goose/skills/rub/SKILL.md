@@ -20,6 +20,7 @@ Develop the user's idea into a concrete brief through collaborative dialogue.
 1. **Brief-only mode** — If the user explicitly wants brainstorming or ideation only, stop after saving `brief.md`.
 2. **Full-flow mode** — If the user wants to build the feature end-to-end, use `rub` as the pipeline entrypoint and continue with:
    `architecture → intent → write-plan → criteria → implement → honk → pr → finish`
+3. **Autogoose overlay** — If the user includes `autogoose` or if `.goose/artifacts/{branch}/autogoose.yaml` is already active for the current workflow, `rub` should draft the best brief it can from the user's request, codebase context, and existing artifacts, then continue without pausing for workflow-internal approvals until `finish`.
 
 Unless the user explicitly limits the scope to brainstorming only, treat `rub` as the default full-flow entrypoint for feature work.
 
@@ -32,23 +33,27 @@ Before starting:
 3. **Decisions:** Check if `.goose/decisions.yaml` exists. If not, inform the user that it is optional but recommended for the `intent` and `criteria` steps.
 4. **Artifact directory:** Create `.goose/artifacts/{branch}/` if it does not exist.
 5. **Gitignore:** Check if `.goose/` or `.goose/artifacts/` is ignored. If neither is ignored, suggest adding one of them.
+6. **Autogoose state:** If the current user request includes `autogoose`, or if `.goose/artifacts/{branch}/autogoose.yaml` already exists with `status: active`, honor autogoose for the current workflow.
 
 ## Procedure
 
 ### Step 1: Brainstorm and Capture the Brief
 
 1. **Understand the idea:** Ask clarifying questions one at a time. Prefer multiple-choice questions when possible. Focus on: purpose, constraints, success criteria.
+   - If autogoose is active, do **not** run iterative Q&A. Infer missing detail from the user's request, existing artifacts, and codebase context, and record assumptions in the brief instead.
 
 2. **Explore approaches:** Once you understand the requirements, propose 2-3 different approaches with trade-offs. Lead with your recommended option and explain why.
 
 3. **Converge on the brief:** Present the brief section by section. Ask after each section whether it looks right. Cover: architecture, components, data flow, error handling.
+   - If autogoose is active, draft the best complete brief you can, save it, and continue without waiting for section-by-section approval.
 
-4. **Save artifact:** Once the user approves the brief, save it to `.goose/artifacts/{branch}/brief.md`.
+4. **Save artifact:** Once the user approves the brief, or once autogoose has synthesized the best current brief, save it to `.goose/artifacts/{branch}/brief.md`.
 
 ### Step 2: Decide Whether to Continue
 
 - If the user explicitly asked for brainstorming only, stop here.
 - Otherwise, continue the rest of the workflow in order, confirming with the user between steps.
+- If autogoose is active, continue in order **without** asking between major workflow steps.
 
 ### Step 3: Continue the Full Workflow
 
@@ -76,11 +81,12 @@ If continuing, run these steps in sequence:
    - Input: all available artifacts + git diff
    - Output: `.goose/artifacts/{branch}/pr-body.md`
    - Ask before proceeding. Skip if the user does not want a PR.
+   - If autogoose is active, generating `pr-body.md` is allowed as an in-scope local artifact, but actual PR creation remains user-gated.
 8. **Finish**
    - Input: review-report.md + all relevant artifacts
    - Verify completion and present merge / PR / keep / discard options.
 
-<!-- HARD-GATE: Do not advance automatically between major workflow steps. The user approves each artifact before the next step. -->
+<!-- HARD-GATE: When autogoose is inactive, do not advance automatically between major workflow steps. The user approves each artifact before the next step. -->
 
 ## Artifact Format
 
@@ -111,3 +117,5 @@ If continuing, run these steps in sequence:
 - Always propose 2-3 approaches before settling on one.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
 - When `rub` is being used as the feature workflow entrypoint, do not stop after `brief.md` unless the user explicitly wants ideation only.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
+- If autogoose is active, skip only questions that gate normal workflow progress. Do not use it to bypass merge, actual PR creation, discard, or remote push choices.

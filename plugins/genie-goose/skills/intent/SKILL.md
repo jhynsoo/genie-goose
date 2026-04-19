@@ -23,6 +23,8 @@ If brief.md or architecture.md is missing:
 1. **Warn:** "Missing artifacts reduce context for intent documentation. Without brief.md/architecture.md, design decisions may lack grounding."
 2. **Ask:** proceed anyway, or run the prerequisite step first?
 3. If the user confirms, proceed using available context.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     available context instead of asking for confirmation.
 
 ## Procedure
 
@@ -55,11 +57,15 @@ If brief.md or architecture.md is missing:
    - The intent.md draft
    - The change proposal list
    - `[DISCUSS]` items for ambiguous points that need clarification
+   - If autogoose is active, make the in-scope judgments yourself, note any
+     assumptions in the draft, and do not stop for confirmation.
 
 6. **Incorporate feedback** and save:
    - `.goose/artifacts/{branch}/intent.md`
    - Update `.goose/conventions.yaml` if user approved convention changes
    - Update `.goose/decisions.yaml` if user approved decision changes
+   - If autogoose is active, agent-owned `.goose/` document updates that are
+     necessary to keep the current workflow consistent are allowed.
 
 ## Artifact Format
 
@@ -87,8 +93,11 @@ If brief.md or architecture.md is missing:
 
 - Complete this skill in the current thread by default. A delegated helper is optional only when the host supports it and the user explicitly asks for it.
 - Only create artifact files — do NOT modify source code. (`.goose/` configuration files may be updated after user approval.)
-- `.goose/` document updates (conventions.yaml, decisions.yaml) are allowed after user approval.
+- `.goose/` document updates (conventions.yaml, decisions.yaml) are allowed
+  after user approval, or after agent-owned judgment when autogoose is active.
 - Always surface discussion points. Do not silently resolve ambiguity.
 - decisions.yaml `context` field must be concrete enough to understand "why" from context alone.
-- Never auto-modify conventions.yaml or decisions.yaml without user confirmation.
+- When autogoose is inactive, never auto-modify conventions.yaml or
+  decisions.yaml without user confirmation.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
 - Resolve the branch name via `git branch --show-current` for the artifact path.

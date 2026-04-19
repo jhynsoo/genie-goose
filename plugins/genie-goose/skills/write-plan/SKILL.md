@@ -20,6 +20,8 @@ If prerequisite artifacts are missing:
 1. **Warn:** "Without architecture.md, the plan may not align with the intended component structure. Without intent.md, intentional exclusions and design rationale will be unavailable."
 2. **Ask:** proceed anyway, or run the prerequisite step first?
 3. If the user confirms, proceed using codebase exploration and user direction.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     available context instead of asking for confirmation.
 
 ## Procedure
 
@@ -38,10 +40,14 @@ If prerequisite artifacts are missing:
    - Include step-by-step instructions with test code snippets
    - Follow TDD pattern where applicable (failing test → implement → verify)
 
-4. **Present the plan section by section.** Ask the user to approve each task before moving on. If the user requests changes, revise and re-present.
+4. **Present the plan section by section.** Ask the user to approve each task
+   before moving on. If the user requests changes, revise and re-present.
+   - If autogoose is active, synthesize the full plan, save it, and continue
+     without section-by-section approval.
 
-<!-- HARD-GATE: Do not save plan.md until every task has exact file paths, test code, and 2-5 minute scope -->
-5. **Save artifact** to `.goose/artifacts/{branch}/plan.md` after full approval.
+<!-- HARD-GATE: When autogoose is inactive, do not save plan.md until every task has exact file paths, test code, and 2-5 minute scope -->
+5. **Save artifact** to `.goose/artifacts/{branch}/plan.md` after full
+   approval, or immediately after drafting it when autogoose is active.
 
 ## Artifact Format
 
@@ -82,6 +88,7 @@ If prerequisite artifacts are missing:
 - Read brief.md before starting. Do not ask the user to repeat what was already decided.
 - Present incrementally — do not dump the entire plan at once.
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.
 
 ## Rationalizations You Must Reject
 

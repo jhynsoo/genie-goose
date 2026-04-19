@@ -21,12 +21,16 @@ If intent.md is missing:
 1. **Warn:** "Without intent.md, the PR summary will lack design rationale. The 'why' context will be limited to what can be inferred from the diff."
 2. **Ask:** proceed anyway, or run the `intent` skill first?
 3. If the user confirms, derive context from available artifacts and git diff.
+   - If autogoose is active, keep the warning but proceed immediately using the
+     available context instead of asking for confirmation.
 
 ## Procedure
 
 1. **Resolve context:**
    - Branch name via `git branch --show-current`.
    - Base branch: detect via `git symbolic-ref refs/remotes/origin/HEAD | sed 's|refs/remotes/origin/||'`. If detection fails, ask the user.
+     - If autogoose is active, do not ask a follow-up question. Use the best
+       local inference you can and note any remaining uncertainty in the draft.
 
 2. **Read inputs:**
    - Required: `intent.md`, `git diff {base}...HEAD`
@@ -45,8 +49,13 @@ If intent.md is missing:
    - Related issue numbers (cannot be inferred — ask the user)
    - Migration steps needed (if any)
    - Anything unclear from the artifacts
+   - If autogoose is active, do not stop for clarification questions. Use
+     explicit placeholders such as `None`, `Unknown`, or a short uncertainty
+     note when the artifacts do not provide enough information.
 
 6. **Incorporate feedback** and save to `.goose/artifacts/{branch}/pr-body.md`.
+   - If autogoose is active, save the best current draft immediately and
+     continue. Generating `pr-body.md` is allowed; creating the actual PR is not.
 
 ## Artifact Format
 
@@ -87,3 +96,4 @@ If intent.md is missing:
 - If an optional artifact is missing, omit or simplify the corresponding section — do not guess.
 - The Summary section must explain "why" (from intent.md), not just "what" (from diff).
 - Resolve the branch name via `git branch --show-current` for the artifact path.
+- Read `.goose/artifacts/{branch}/autogoose.yaml` at step start when it exists.

@@ -26,3 +26,4 @@ Instead, inform them briefly that `rub` is the preferred entrypoint for the full
 - Do not let `goose` drift from `rub`.
 - Any future full-flow behavior changes should be made in `rub`, not duplicated here.
 - If the user explicitly wants brainstorming only, honor `rub`'s brief-only mode.
+- Any future autogoose behavior changes should also be made in `rub`, not separately here.
