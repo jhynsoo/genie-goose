@@ -2,11 +2,10 @@
 name: autogoose
 description: >
   Enable autogoose / auto mode for the current workflow when the user
-  says "autogoose", asks to stop asking for approvals, or wants the
-  workflow to continue automatically. Persists branch-local workflow
-  mode state so downstream genie-goose skills can skip in-scope
-  approval prompts while keeping merge, PR creation, discard, and
-  remote push under explicit user choice.
+  says autogoose, asks to stop asking for approvals, or wants it to
+  continue automatically. Persists branch-local state so downstream
+  skills skip in-scope approvals while keeping merge, PR creation,
+  discard, and remote push under explicit user choice.
 ---
 
 # Autogoose
