@@ -52,8 +52,10 @@ Use the host client's skill invocation mechanism:
 
 ```
 Claude Code: /genie-goose:rub
+Claude Code: /genie-goose:autogoose
 Codex plugin: @genie-goose
 Codex direct skill: $rub
+Codex direct skill: $autogoose
 ```
 
 When referring to skills in user-facing replies, prefer neutral wording like
@@ -70,11 +72,15 @@ When you invoke a skill, its content is loaded and presented to you — follow i
 
 When evaluating the routing table, check in this priority order:
 
-1. **Process skills first** — `rub` (brainstorming-first feature entry), `debug` (debugging)
-   → These determine HOW to approach the task. Check before anything else.
-2. **Pipeline skills** — `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `receive-review`, `pr`, `finish`
+1. **Workflow mode toggles first** — `autogoose`
+   → This changes HOW the current workflow should continue. Check before process
+   or pipeline skills when the user asks to stop workflow questions or approve
+   automatic continuation.
+2. **Process skills** — `rub` (brainstorming-first feature entry), `debug` (debugging)
+   → These determine HOW to approach the task. Check before pipeline skills.
+3. **Pipeline skills** — `architecture`, `intent`, `write-plan`, `criteria`, `implement`, `honk`, `receive-review`, `pr`, `finish`
    → These guide execution. Check if no process skill applies.
-3. **Utility skills** — `update-docs`, `polish`
+4. **Utility skills** — `update-docs`, `polish`
    → Standalone support. Check last.
 
 If the user says "add a login feature," don't jump to `implement` — check `rub` first.
@@ -98,6 +104,7 @@ This classification drives the route recommendation below.
 
 | User Intent | Skill | Notes |
 |-------------|-------|-------|
+| Enable auto mode, "autogoose", "stop asking for approvals", "continue automatically" | `autogoose` | Workflow mode toggle. Persist state for the current workflow, then resume the active route |
 | Build a new feature end-to-end, full workflow | `rub` | Brainstorming-first full workflow entrypoint |
 | "Let's brainstorm", "I have an idea", explore approaches | `rub` | Ideation entry point. Stops after `brief.md` only if the user wants brainstorming only |
 | Design architecture, structure, components | `architecture` | Enriched by brief.md if available |
@@ -120,7 +127,7 @@ When the user describes a task (without naming a specific skill), recommend a ro
 
 | Classification | Recommended Route |
 |---------------|-------------------|
-| **Full feature** | `rub` (brainstorming-first full 9-step pipeline) |
+| **Full feature** | `rub` (brainstorming-first full 9-step pipeline, optionally with autogoose overlay) |
 | **Medium task** | `rub → write-plan → implement → honk → finish` |
 | **Small task** | `implement → finish` (or no skill, just polish) |
 | **Debug** | `debug` |
@@ -131,6 +138,8 @@ When the user describes a task (without naming a specific skill), recommend a ro
 1. **Classify** the task using the Task Classification table.
 2. **Check existing artifacts** in `.goose/artifacts/{branch}/` to see what context already exists.
 3. **Recommend a route** tailored to the classification and existing artifacts.
+   - If the user also asks for `autogoose`, treat it as a workflow mode toggle
+     layered onto the recommended route rather than as a separate workflow.
 4. **Present the route** to the user:
 
    > Based on your request, I'd recommend this route:
@@ -142,6 +151,11 @@ When the user describes a task (without naming a specific skill), recommend a ro
 Routes are recommendations, not mandates.
 
 > **Note:** For full feature and medium task routes, `receive-review` can optionally follow `honk` for stricter review processing (pushback protocol, anti-sycophancy enforcement).
+>
+> **Autogoose note:** When autogoose is active, downstream workflow skills may
+> proceed through missing-artifact warnings and other workflow-internal approval
+> points without asking the user again. External or destructive actions still
+> remain user-gated.
 
 ## Routing Flowchart
 
@@ -196,6 +210,21 @@ digraph routing {
 
 If the user's request involves creating, building, or modifying a feature — and `brief.md` does not exist in `.goose/artifacts/{branch}/` — suggest a route that starts with `rub`. This is a suggestion, not a gate. The user can choose to skip brainstorming if they already have a clear picture of what to build.
 
+## Autogoose Mode
+
+Use `autogoose` when the user wants the current workflow to continue without
+further workflow-internal questions or approval requests.
+
+- If the user says `autogoose` alongside a new feature request, route to `rub`
+  with autogoose overlay.
+- If the user says `autogoose` during an existing workflow,
+  invoke the `autogoose` skill first, then resume the active workflow step.
+- When autogoose is active, downstream skills should read
+  `.goose/artifacts/{branch}/autogoose.yaml` and skip only questions that gate
+  normal workflow progress.
+- Never treat autogoose as permission to merge, create the actual PR, discard,
+  or push remotely without explicit user choice.
+
 ## Legacy Alias
 
 If the user explicitly asks for `goose`, treat it as a backward-compatible alias for `rub`.
@@ -221,7 +250,10 @@ Skills are enriched by prior artifacts but most do not hard-require them. Before
 | `polish` | — | — |
 | `debug` | — | — |
 
-If enriching artifacts are missing, the skill will warn about reduced context and ask the user to confirm before proceeding.
+If enriching artifacts are missing, the skill will warn about reduced context
+and ask the user to confirm before proceeding.
+If autogoose is active, downstream workflow skills may continue after the
+warning without asking again.
 If a **hard requirement** is missing, the skill cannot proceed.
 
 ## Context-Aware Routing

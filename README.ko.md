@@ -102,9 +102,28 @@ genie-goose를 사용하는 세 가지 방법이 있습니다:
 Claude Code: /genie-goose:rub 사용자 인증 시스템 구축
 Codex 라우터 엔트리포인트: @genie-goose 사용자 인증 시스템 구축
 Codex 전체 파이프라인 스킬: $rub 사용자 인증 시스템 구축
+Codex 전체 파이프라인 스킬 + 자동 모드: $rub 사용자 인증 시스템 구축 autogoose
 ```
 
 **rub → architecture → intent → write-plan → criteria → implement → honk → pr (선택) → finish** 순서로 실행하며, 각 단계 사이에 사용자 입력을 기다립니다. 중대형 기능 개발에 권장됩니다.
+
+`autogoose`를 함께 쓰거나, 나중에 `$autogoose`로 켜면 현재
+워크플로우는 `finish`까지 workflow 내부 승인 지점을 자동으로 통과합니다.
+단, 병합, 실제 PR 생성, 폐기, 원격 push는 계속 명시적인 사용자 선택이 필요합니다.
+
+### 자동 모드
+
+`autogoose`는 별도 파이프라인이 아니라 workflow mode입니다.
+
+- 시작부터 자동 모드:
+  - `Codex: $rub user profile image 추가 autogoose`
+- 진행 중 활성화:
+  - `Codex: $autogoose approve`
+- 지속 범위:
+  - autogoose는 현재 워크플로우에만 적용되고, 다음 워크플로우에서는 다시 켜야 합니다
+- 안전 경계:
+  - autogoose는 workflow 내부 승인 요청은 생략할 수 있지만, 병합, 실제 PR 생성,
+    폐기, 원격 push 권한까지 주지는 않습니다
 
 ### 2. 추천 경로
 
@@ -112,7 +131,7 @@ Codex 전체 파이프라인 스킬: $rub 사용자 인증 시스템 구축
 
 | 태스크 규모 | 추천 경로 |
 |------------|----------|
-| 대형 기능 | `rub` (브레인스토밍으로 시작하는 전체 9단계 파이프라인) |
+| 대형 기능 | `rub` (브레인스토밍으로 시작하는 전체 9단계 파이프라인, 필요하면 autogoose overlay) |
 | 중형 태스크 | `rub → write-plan → implement → honk → finish` |
 | 소형 태스크 | `implement → finish` (또는 스킬 불필요) |
 | 디버그 | `debug` |
@@ -135,6 +154,7 @@ Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugins/g
 | `Claude: /genie-goose:rub <주제>` `Codex: $rub <주제>` | 브레인스토밍으로 시작하는 전체 9단계 파이프라인 프리셋. 아이데이션만 원하면 그렇게 명시하고 `brief.md`에서 멈춥니다. |
 | `Codex: @genie-goose <주제>` | 플러그인/라우터 엔트리포인트. 요청을 분류한 뒤 다음 스킬을 고릅니다. |
 | `Claude: /genie-goose:goose <주제>` `Codex: $goose <주제>` | `rub`의 레거시 별칭. 하위 호환성을 위해 유지됩니다. |
+| `Claude: /genie-goose:autogoose` `Codex: $autogoose` | 현재 워크플로우에 autogoose를 켜서 `finish`까지 in-scope 승인 요청을 생략합니다. |
 | `Claude: /genie-goose:architecture` `Codex: $architecture` | 합의된 brief를 바탕으로 기술 아키텍처 설계 |
 | `Claude: /genie-goose:intent` `Codex: $intent` | 설계 의도 문서화 + 컨벤션/결정 충돌 감지 및 변경 제안 |
 | `Claude: /genie-goose:write-plan` `Codex: $write-plan` | 마이크로 태스크와 테스트 코드가 포함된 상세 구현 계획 작성 |
@@ -149,6 +169,8 @@ Codex에서도 세션 시작 시 자동 라우팅을 원하면 기존 `plugins/g
 | `Claude: /genie-goose:polish` `Codex: $polish` | 검증 게이트 — 근거 없이 완료 주장 불가 |
 
 선행 산출물이 없으면 경고만 표시되며 차단되지 않습니다 — 축소된 컨텍스트로 진행할 수 있습니다.
+autogoose가 활성화되어 있으면, 이후 워크플로우 스킬은 이런 경고 뒤에 다시
+확인을 묻지 않고 자동으로 계속 진행할 수 있습니다.
 
 ### 워크플로우 다이어그램
 
@@ -189,6 +211,8 @@ debug           ←── (독립 실행, 선행 조건 없음)
 ```
 
 모든 산출물은 `.goose/artifacts/{branch-name}/`에 저장됩니다.
+autogoose가 활성화되어 있으면 branch-local 상태는
+`.goose/artifacts/{branch-name}/autogoose.yaml`에 저장됩니다.
 
 ## 가드 레일
 
@@ -226,7 +250,7 @@ Codex에서 로컬 테스트:
 2. `/plugins`를 엽니다.
 3. `Genie Goose Local`에서 `genie-goose`를 설치하거나 재설치합니다.
 4. 새 스레드에서 `@genie-goose`를 플러그인/라우터 엔트리포인트로 사용합니다.
-5. 라우터를 우회하고 싶을 때만 특정 `$skill`을 사용합니다. 예: 전체 파이프라인은 `$rub`.
+5. 라우터를 우회하고 싶을 때만 특정 `$skill`을 사용합니다. 예: 전체 파이프라인은 `$rub`, 진행 중 자동 모드는 `$autogoose`.
 
 ## 라이선스
 

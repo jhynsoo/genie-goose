@@ -16,11 +16,12 @@ Test the Codex plugin locally:
 2. Open `/plugins`.
 3. Install or reinstall `genie-goose` from `Genie Goose Local`.
 4. Start a new thread and use `@genie-goose` as the plugin/router entrypoint.
-5. Use a specific `$skill` only when you want to bypass the router, for example `$rub`.
+5. Use a specific `$skill` only when you want to bypass the router, for example `$rub` or `$autogoose`.
 
 Available skills (all require manual invocation):
 - `/genie-goose:rub` — Brainstorming-first full 9-step pipeline preset (recommended for large features)
 - `/genie-goose:goose` — Legacy alias for `rub`
+- `/genie-goose:autogoose` — Enable auto mode for the current workflow
 - `/genie-goose:architecture` — Architecture design
 - `/genie-goose:intent` — Design intent + conflict detection (fork)
 - `/genie-goose:write-plan` — Implementation plan

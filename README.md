@@ -102,9 +102,30 @@ Run the complete 9-step workflow with a single command:
 Claude Code: /genie-goose:rub build a user authentication system
 Codex router entrypoint: @genie-goose build a user authentication system
 Codex full pipeline skill: $rub build a user authentication system
+Codex full pipeline skill with auto mode: $rub build a user authentication system autogoose
 ```
 
 This executes all steps in sequence — **rub → architecture → intent → write-plan → criteria → implement → honk → pr (optional) → finish** — pausing for your input between steps. Recommended for medium-to-large features.
+
+If you include `autogoose`, or enable it later with `$autogoose`,
+the current workflow continues automatically through workflow-internal approval
+points until `finish`. Merge, actual PR creation, discard, and remote push still
+remain explicit user choices.
+
+### Auto Mode
+
+`autogoose` is a workflow mode, not a separate pipeline.
+
+- Start in auto mode:
+  - `Codex: $rub add user profile images autogoose`
+- Enable it mid-workflow:
+  - `Codex: $autogoose approve`
+- Duration:
+  - autogoose lasts only for the current workflow and must be re-enabled for a
+    later workflow
+- Safety boundary:
+  - autogoose may skip workflow-internal approval prompts, but it does **not**
+    authorize merge, actual PR creation, discard, or remote push
 
 ### 2. Recommended Route
 
@@ -112,7 +133,7 @@ The `lamp` skill router classifies your task by scope and recommends a tailored 
 
 | Task Size | Recommended Route |
 |-----------|-------------------|
-| Full feature | `rub` (brainstorming-first full 9-step pipeline) |
+| Full feature | `rub` (brainstorming-first full 9-step pipeline, optionally with autogoose overlay) |
 | Medium task | `rub → write-plan → implement → honk → finish` |
 | Small task | `implement → finish` (or no skill needed) |
 | Debug | `debug` |
@@ -135,6 +156,7 @@ Run any skill independently:
 | `Claude: /genie-goose:rub <topic>` `Codex: $rub <topic>` | Brainstorming-first full 9-step pipeline preset. If you only want ideation, say so explicitly and stop after `brief.md`. |
 | `Codex: @genie-goose <topic>` | Plugin/router entrypoint. Let genie-goose classify the request and choose the next skill. |
 | `Claude: /genie-goose:goose <topic>` `Codex: $goose <topic>` | Legacy alias for `rub`. Kept for backward compatibility. |
+| `Claude: /genie-goose:autogoose` `Codex: $autogoose` | Enable autogoose for the current workflow so in-scope approval prompts are skipped until `finish`. |
 | `Claude: /genie-goose:architecture` `Codex: $architecture` | Design technical architecture based on the approved brief |
 | `Claude: /genie-goose:intent` `Codex: $intent` | Document design decisions + detect conflicts with conventions/decisions |
 | `Claude: /genie-goose:write-plan` `Codex: $write-plan` | Write detailed implementation plan with micro-tasks and test snippets |
@@ -149,6 +171,8 @@ Run any skill independently:
 | `Claude: /genie-goose:polish` `Codex: $polish` | Verification gate — evidence before claims |
 
 Missing prerequisite artifacts produce warnings, not blocks — you can always proceed with reduced context.
+When autogoose is active, downstream workflow skills may continue automatically
+after those warnings instead of asking for confirmation again.
 
 ### Workflow Diagram
 
@@ -189,6 +213,8 @@ debug           ←── (standalone, no prerequisites)
 ```
 
 All artifacts are saved to `.goose/artifacts/{branch-name}/`.
+When autogoose is active, its branch-local workflow state lives at
+`.goose/artifacts/{branch-name}/autogoose.yaml`.
 
 ## Guard Rails
 
@@ -226,7 +252,8 @@ To test changes locally in Codex:
 2. Open `/plugins`.
 3. Install or reinstall `genie-goose` from `Genie Goose Local`.
 4. Start a new thread and use `@genie-goose` as the plugin/router entrypoint.
-5. Use a specific `$skill` only when you want to bypass the router, for example `$rub` for the full pipeline.
+5. Use a specific `$skill` only when you want to bypass the router, for example
+   `$rub` for the full pipeline or `$autogoose` to enable auto mode mid-workflow.
 
 ## License
 
